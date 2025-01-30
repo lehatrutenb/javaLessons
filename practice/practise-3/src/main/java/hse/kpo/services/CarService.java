@@ -4,10 +4,18 @@ import hse.kpo.domains.Car;
 import hse.kpo.domains.Customer;
 import hse.kpo.interfaces.ICarFactory;
 import hse.kpo.interfaces.ICarProvider;
+import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
+//import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
+//@Service
+//@Scope("prototype")
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@Component
 public class CarService implements ICarProvider {
 
     private final List<Car> cars = new ArrayList<>();

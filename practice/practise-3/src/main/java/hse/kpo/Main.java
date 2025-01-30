@@ -1,23 +1,27 @@
-package studying;
+package hse.kpo;
 
-import studying.domains.Customer;
-import studying.factories.HandCarFactory;
-import studying.factories.PedalCarFactory;
-import studying.params.EmptyEngineParams;
-import studying.params.PedalEngineParams;
-import studying.services.CarService;
-import studying.services.CustomerStorage;
-import studying.services.HseCarService;
-import studying.tests.TestStr;
+import hse.kpo.domains.Customer;
+import hse.kpo.factories.HandCarFactory;
+import hse.kpo.factories.PedalCarFactory;
+import hse.kpo.params.EmptyEngineParams;
+import hse.kpo.params.PedalEngineParams;
+import hse.kpo.services.CarService;
+import hse.kpo.services.CustomerStorage;
+import hse.kpo.services.HseCarService;
+import hse.kpo.tests.TestStr;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
+@SpringBootApplication
 public class Main {
     private static <T> boolean UniqueListsAreEqual(List<T> list1, List<T> list2) {
         return list1.containsAll(list2) && list2.containsAll(list1);
     }
 
-    private static void testReviveCar(TestStr testStr) {
+    private static void testReviveCar(hse.kpo.tests.TestStr testStr) {
         testStr.setup();
 
         testStr.carService.addCar(testStr.reviveCarFactory, EmptyEngineParams.DEFAULT);
@@ -42,7 +46,7 @@ public class Main {
         testStr.teardown();
     }
 
-    private static void testReviveAndOthers(TestStr testStr) {
+    private static void testReviveAndOthers(hse.kpo.tests.TestStr testStr) {
         testStr.setup();
 
         testStr.carService.addCar(testStr.reviveCarFactory, EmptyEngineParams.DEFAULT);
@@ -71,7 +75,7 @@ public class Main {
         testStr.teardown();
     }
 
-    private static void defaultTest(TestStr testStr) {
+    private static void defaultTest(hse.kpo.tests.TestStr testStr) {
         testStr.setup();
 
         Customer customerNotGetCar = new Customer("Bob4", 4, 4);

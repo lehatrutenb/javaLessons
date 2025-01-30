@@ -4,7 +4,13 @@ import hse.kpo.interfaces.ICarProvider;
 import hse.kpo.interfaces.ICustomerProvider;
 
 import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+@Component
 public class HseCarService {
 
     private final ICarProvider carProvider;
