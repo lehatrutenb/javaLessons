@@ -1,12 +1,12 @@
 package hse.kpo.domains;
 
-import lombok.ToString;
 import hse.kpo.interfaces.IEngine;
+import lombok.ToString;
 
 @ToString
-public class HandEngine implements IEngine {
+public class ReviveEngine implements IEngine {
     @Override
     public boolean isCompatible(Customer customer) {
-        return customer.getHandPower() > 5;
+        return customer.iq > 300;
     }
 }
