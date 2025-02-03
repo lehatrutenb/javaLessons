@@ -1,6 +1,7 @@
 plugins {
     id("java")
     kotlin("jvm")
+    id("jacoco")
 }
 
 group = "studying"
@@ -20,6 +21,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation(kotlin("stdlib-jdk8"))
+    implementation("org.mockito:mockito-core:5.15.2")
 }
 
 tasks.test {
