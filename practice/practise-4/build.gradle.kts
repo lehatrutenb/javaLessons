@@ -1,9 +1,9 @@
 plugins {
 	java
 	checkstyle
+	jacoco
 	id("org.springframework.boot") version "3.4.2"
 	id("io.spring.dependency-management") version "1.1.7"
-	id("jacoco")
 }
 
 group = "hse"
@@ -39,7 +39,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-	implementation("org.mockito:mockito-core:5.15.2")
+    implementation("org.mockito:mockito-core:5.15.2")
 }
 
 tasks.withType<Test> {
