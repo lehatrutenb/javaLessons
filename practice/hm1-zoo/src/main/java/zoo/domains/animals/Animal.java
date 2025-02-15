@@ -17,6 +17,6 @@ public class Animal extends Thing implements Ianimal, Ithing {
     }
     @Override
     public String toString() {
-        return "{" + super.toString() + animalAttrs.toString() + "}";
+        return "{" + super.toString() + "," + animalAttrs.toString() + "}";
     }
 }

@@ -2,6 +2,8 @@ package zoo.domains.animals;
 
 import zoo.domains.nonLThings.ThingAttributes;
 import zoo.interfaces.Iheribove;
+import zoo.types.MonkeyType;
+import zoo.types.RabbitType;
 
 public class Herbo extends Animal implements Iheribove {
     private final int kindness;
@@ -16,5 +18,9 @@ public class Herbo extends Animal implements Iheribove {
 
     public int GetKindness() {
         return kindness;
+    }
+
+    public static boolean IsAnimalHerbo(String animalName) {
+        return animalName.equals(RabbitType.Name) || animalName.equals(MonkeyType.Name);
     }
 }
