@@ -40,6 +40,7 @@ dependencies {
 	testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation("org.mockito:mockito-core:5.15.2")
+	implementation("io.vavr:vavr:0.10.5")
 }
 
 tasks.withType<Test> {
