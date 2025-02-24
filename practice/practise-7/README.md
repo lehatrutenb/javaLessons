@@ -1,104 +1,57 @@
-# Занятие 6. Поведенческие паттерны
-Сегодня посмотрим как можно управлять поведением приложений с помощью различных паттернов.
-## Функциональные требования
+# Занятие 7. Структурные паттерны
+Структурные паттерны предназначены для улучшения взаимодействия между классами.
+В данном занятии мы рассмотрим следующие паттерны:
+- Фасад
+- Адаптер
+
+## Цель занятия
+- Научиться использовать структурные паттерны
 ## Требования к реализации
-1. Изменить составление отчета с помощью паттерна Наблюдатель.
+1. Добавить в плагины SonarLint или другой сонар подобный анализатор статического кода.
+2. Создать единую точку входа - класс Hse, который будет являться фасадом приложения.
+    - Все действия в основном тесте KpoApplicationTest должны происходить с помощью фасада.
+3. Создать катамаран с колесиками, который сможем продавать в carStorage.
 ## Тестирование
-1. Все действия о продажах машин и катамаранов записываются в отчет.
+1. .
 ## Задание на доработку
-- 
+- Добавить фабрику для катамарана с колесиками.
 ## Пояснения к реализации
-Для создания наблюдателей добавьте список в класс, который будем мониторить 
-```
-final List<SalesObserver> observers = new ArrayList<>();
-```
+## 1. Паттерн Facade
 
-Для добавление наблюдателя создайте метод
-```
-public void addObserver(SalesObserver observer) {
-    observers.add(observer);
-}
-```
+### Описание паттерна
 
-Для реализации оповещений используйте
-```
-private void notifyObserversForSale(Customer customer, ProductionTypes productType, int vin) {
-    observers.forEach(obs -> obs.onSale(customer, productType, vin));
-}
-```
+Паттерн **Facade** предоставляет упрощенный интерфейс для сложной подсистемы. Он скрывает детали работы компонентов системы и предлагает более простой способ их использования.
 
-Добавьте метод оповещения в продажу машин
-```
-notifyObserversForSale(customer, ProductionTypes.CAR, car.getVin());
-```
+### Реализация в классе `Hse`
 
-Теперь можно не добавлять вручную в отчет информацию о пользователях. 
-Но необходимо добавлять и операции. Для этого:
+Класс `Hse` является примером реализации паттерна **Facade**. Он объединяет функциональность нескольких компонентов (например, хранилищ, сервисов и фабрик) и предоставляет удобный интерфейс для управления клиентами, транспортными средствами и процессами продаж.
 
-В Gradle добавьте поддержку работы аннотаций
-```
-implementation("org.springframework.boot:spring-boot-starter-aop")
-```
+#### Основные методы класса `Hse`
 
-Создайте аннотацию Sales
-```
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface Sales {
-    String value() default "";
-}
-```
+- **`addCustomer(String name, int legPower, int handPower, int iq)`**: Добавляет нового клиента в систему.
+- **`addPedalCar(int pedalSize)`**: Добавляет педальный автомобиль в систему.
+- **`addHandCar()`**: Добавляет автомобиль с ручным приводом.
+- **`sell()`**: Запускает процесс продажи доступного транспорта.
+- **`generateReport()`**: Генерирует отчет о продажах.
+
+#### Пример использования
 
 ```
-@Component
-@Aspect
-@RequiredArgsConstructor
-public class SalesAspect {
-private final SalesObserver salesObserver;
+hse.addCustomer("Ivan1",6,4, 150);
+hse.addCustomer("Maksim", 4, 6, 80);
+hse.addCustomer("Petya", 6, 6, 20);
+hse.addCustomer("Nikita", 4, 4, 300);
 
-    @Around("@annotation(sales)")
-    public Object sales(ProceedingJoinPoint pjp, Sales sales) throws Throwable {
+hse.addPedalCar(6);
+hse.addPedalCar(6);
 
-        salesObserver.checkCustomers();
+hse.addHandCar();
+hse.addHandCar();
 
-        String operationName = sales.value().isEmpty() ? pjp.getSignature().toShortString() : sales.value();
-        try {
-            Object result = pjp.proceed();
-            salesObserver.checkCustomers();
-            return result;
-        } catch (Throwable e) {
-            throw e;
-        }
-    }
-}
+hse.sell();
+
+System.out.println(hse.generateReport());
 ```
-
-
-@Component
-@RequiredArgsConstructor
-public class ReportSalesObserver implements SalesObserver {
-private final CustomerStorage customerStorage;
-
-    private final ReportBuilder reportBuilder = new ReportBuilder();
-
-    public Report buildReport() {
-        return reportBuilder.build();
-    }
-
-    public void checkCustomers() {
-        reportBuilder.addCustomers(customerStorage.getCustomers());
-    }
-
-    @Override
-    public void onSale(Customer customer, ProductionTypes productType, int vin) {
-        String message = String.format(
-                "Продажа: %s VIN-%d клиенту %s (Сила рук: %d, Сила ног: %d, IQ: %d)",
-                productType, vin, customer.getName(),
-                customer.getHandPower(), customer.getLegPower(), customer.getIq()
-        );
-        reportBuilder.addOperation(message);
-    }
-}
 
 
 
