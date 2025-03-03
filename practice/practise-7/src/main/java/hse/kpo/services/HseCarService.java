@@ -3,13 +3,14 @@ package hse.kpo.services;
 import hse.kpo.annotations.Sales;
 import hse.kpo.domains.Customer;
 import hse.kpo.enums.ProductionTypes;
-import hse.kpo.interfaces.SalesObserver;
 import hse.kpo.interfaces.cars.CarProvider;
 import hse.kpo.interfaces.CustomerProvider;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import hse.kpo.observers.SalesObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
