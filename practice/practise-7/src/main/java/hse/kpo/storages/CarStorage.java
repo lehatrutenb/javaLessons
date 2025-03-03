@@ -44,4 +44,13 @@ public class CarStorage implements CarProvider {
 
         cars.add(car);
     }
+
+    /**
+     * Метод добавления существую {@link Car} в систему.
+     *
+     * @param car машина для добавления
+     */
+    public void addExitingCar(Car car) {
+        cars.add(car);
+    }
 }

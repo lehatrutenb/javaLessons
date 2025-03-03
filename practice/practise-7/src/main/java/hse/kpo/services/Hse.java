@@ -15,7 +15,6 @@ import hse.kpo.storages.CustomerStorage;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -36,9 +35,7 @@ public class Hse {
     private final HandCatamaranFactory handCatamaranFactory;
     private final LevitationCatamaranFactory levitationCatamaranFactory;
     private final ReportSalesObserver reportSalesObserver;
-    private final HandCatamaranWithWheelsFactory handCatamaranWithWheelsFactory;
-    private final PedalCatamaransWithWheelsFactory pedalCatamaransWithWheelsFactory;
-    private final LevitationCatamaranWithWheelsFactory levitationCatamaranWithWheelsFactory;
+    private final CatamaranWithWheelsFactory catamaranWithWheelsFactory;
     //private final SalesObserver salesObserver;
 
     @PostConstruct
@@ -79,13 +76,13 @@ public class Hse {
     }
 
     public void AddHandCatamaranWithWheels() {
-        carStorage.addCar(handCatamaranWithWheelsFactory, EmptyEngineParams.DEFAULT);
+        carStorage.addExitingCar(catamaranWithWheelsFactory.create(catamaranStorage.createCatamaran(handCatamaranFactory, EmptyEngineParams.DEFAULT)));
     }
     public void AddPedalCatamaranWithWheels(PedalEngineParams pedalEngineParams) {
-        carStorage.addCar(pedalCatamaransWithWheelsFactory, pedalEngineParams);
+        carStorage.addExitingCar(catamaranWithWheelsFactory.create(catamaranStorage.createCatamaran(pedalCatamaranFactory, pedalEngineParams)));
     }
     public void AddLevitationCatamaranWithWheels() {
-        carStorage.addCar(levitationCatamaranWithWheelsFactory, EmptyEngineParams.DEFAULT);
+        carStorage.addExitingCar(catamaranWithWheelsFactory.create(catamaranStorage.createCatamaran(levitationCatamaranFactory, EmptyEngineParams.DEFAULT)));
     }
 
     public void AddHandCatamaran() {
