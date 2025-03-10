@@ -1,13 +1,17 @@
 package hse.kpo.domains;
 
+import hse.kpo.domains.customers.Customer;
 import hse.kpo.enums.ProductionTypes;
 import hse.kpo.interfaces.Engine;
 import lombok.ToString;
+
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Класс, реализующий {@link Engine} ручного типа.
  */
 @ToString
+@XmlRootElement(name="Engine")
 public class HandEngine implements Engine {
     @Override
     public boolean isCompatible(Customer customer, ProductionTypes type) {

@@ -1,13 +1,13 @@
 package hse.kpo.interfaces.cars;
 
-import hse.kpo.domains.Car;
+import hse.kpo.domains.cars.Car;
 
 /**
  * Интерфейс для определения методов фабрик.
  *
- * @param <T> параметры для фабрик
+ * @param <TParams> параметры для фабрик
  */
-public interface CarFactory<T> {
+public interface CarFactory<TParams> {
     /**
      * Метод создания машин.
      *
@@ -15,5 +15,5 @@ public interface CarFactory<T> {
      * @param carNumber номер
      * @return {@link Car}
      */
-    Car create(T carParams, int carNumber);
+    Car create(TParams carParams, int carNumber);
 }

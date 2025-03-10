@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TransportList>
+<Vehicle>
+    <VIN>1000001</VIN>
+    <Type>car</Type>
+    <Engine>
+        <Type>PedalEngine(size=6)</Type>
+    </Engine>
+</Vehicle>
+
+<Vehicle>
+    <VIN>4</VIN>
+    <Type>car</Type>
+    <Engine>
+        <Type>HandEngine()</Type>
+    </Engine>
+</Vehicle>
+
+</TransportList>

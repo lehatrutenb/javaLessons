@@ -1,15 +1,16 @@
-package hse.kpo.services;
+package hse.kpo.services.cars;
 
-import hse.kpo.domains.Customer;
+import hse.kpo.annotations.Sales;
+import hse.kpo.domains.customers.Customer;
 import hse.kpo.enums.ProductionTypes;
-import hse.kpo.observers.Sales;
-import hse.kpo.observers.SalesObserver;
 import hse.kpo.interfaces.cars.CarProvider;
 import hse.kpo.interfaces.CustomerProvider;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import hse.kpo.observers.SalesObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,14 +22,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 @Slf4j
 public class HseCarService {
-
     private final List<SalesObserver> observers = new ArrayList<>();
-
     private final CarProvider carProvider;
 
     private final CustomerProvider customerProvider;
 
-    public void addObserver(SalesObserver observer) {
+    public void AddObserver(SalesObserver observer) {
         observers.add(observer);
     }
 
@@ -41,7 +40,9 @@ public class HseCarService {
      */
     @Sales
     public void sellCars() {
+        // получаем список покупателей
         var customers = customerProvider.getCustomers();
+        // пробегаемся по полученному списку
         customers.stream().filter(customer -> Objects.isNull(customer.getCar()))
                 .forEach(customer -> {
                     var car = carProvider.takeCar(customer);

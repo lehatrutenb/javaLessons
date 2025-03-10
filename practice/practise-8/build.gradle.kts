@@ -43,6 +43,11 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 	implementation("org.springframework.boot:spring-boot-starter-aop")
+	implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
+	implementation("com.sun.xml.bind:jaxb-impl:2.3.2")
+	implementation("javax.xml.bind:jaxb-api:2.3.0")
+	implementation("javax.activation:activation:1.1")
+	implementation("org.glassfish.jaxb:jaxb-runtime:2.3.0")
 }
 
 tasks.withType<Test> {

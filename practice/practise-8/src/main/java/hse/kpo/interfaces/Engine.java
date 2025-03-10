@@ -1,9 +1,12 @@
 package hse.kpo.interfaces;
 
 
-import hse.kpo.domains.Customer;
+import hse.kpo.domains.customers.Customer;
 import hse.kpo.enums.ProductionTypes;
 
+import javax.xml.bind.annotation.XmlTransient;
+
+@XmlTransient
 public interface Engine {
 
     /**

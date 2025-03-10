@@ -1,147 +1,159 @@
 package hse.kpo.facade;
 
-import hse.kpo.domains.Catamaran;
-import hse.kpo.domains.CatamaranWithWheels;
-import hse.kpo.domains.Customer;
+import hse.kpo.domains.PureTransport;
+import hse.kpo.domains.Report;
+import hse.kpo.domains.cars.Car;
+import hse.kpo.domains.customers.Customer;
+import hse.kpo.enums.ReportFormat;
+import hse.kpo.enums.TransportFormat;
+import hse.kpo.export.reports.ReportExporter;
+import hse.kpo.factories.ReportExporterFactory;
+import hse.kpo.factories.TransportExporterFactory;
+import hse.kpo.factories.TransportImportererFactory;
 import hse.kpo.factories.cars.*;
-import hse.kpo.factories.catamarans.*;
+import hse.kpo.factories.catamarans.HandCatamaranFactory;
+import hse.kpo.factories.catamarans.LevitationCatamaranFactory;
+import hse.kpo.factories.catamarans.PedalCatamaranFactory;
+import hse.kpo.interfaces.Transport;
+import hse.kpo.interfaces.TransportExporter;
+import hse.kpo.interfaces.TransportImporter;
+import hse.kpo.observers.ReportSalesObserver;
+import hse.kpo.observers.SalesObserver;
 import hse.kpo.params.EmptyEngineParams;
 import hse.kpo.params.PedalEngineParams;
-import hse.kpo.services.HseCarService;
-import hse.kpo.services.HseCatamaranService;
-import hse.kpo.storages.CarStorage;
-import hse.kpo.storages.CatamaranStorage;
-import hse.kpo.storages.CustomerStorage;
-import hse.kpo.observers.SalesObserver;
+import hse.kpo.services.cars.HseCarService;
+import hse.kpo.services.catamarans.HseCatamaranService;
+import hse.kpo.storages.TransportStorage;
+import hse.kpo.storages.cars.CarStorage;
+import hse.kpo.storages.catamarans.CatamaranStorage;
+import hse.kpo.storages.customers.CustomerStorage;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import java.util.Random;
 
-/**
- * Фасад для работы с системой продажи транспортных средств.
- * Предоставляет упрощенный интерфейс для управления клиентами,
- * транспортом и процессами продаж.
- */
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
+
 @Component
+@Slf4j
 @RequiredArgsConstructor
 public class Hse {
-    private final CustomerStorage customerStorage;
     private final CarStorage carStorage;
     private final CatamaranStorage catamaranStorage;
-    private final HseCarService carService;
-    private final HseCatamaranService catamaranService;
-    private final SalesObserver salesObserver;
+    private final CustomerStorage customerStorage;
+    private final HseCarService hseCarService;
+    private final HseCatamaranService hseCatamaranService;
     private final PedalCarFactory pedalCarFactory;
+    private final PedalCatamaranFactory pedalCatamaranFactory;
     private final HandCarFactory handCarFactory;
     private final LevitationCarFactory levitationCarFactory;
-    private final PedalCatamaranFactory pedalCatamaranFactory;
     private final HandCatamaranFactory handCatamaranFactory;
     private final LevitationCatamaranFactory levitationCatamaranFactory;
+    private final ReportSalesObserver reportSalesObserver;
+    private final CatamaranWithWheelsFactory catamaranWithWheelsFactory;
+    private final ReportExporterFactory reportExporterFactory;
+    private final TransportExporterFactory transportExporterFactory;
+    private final TransportImportererFactory transportImportererFactory;
+    //private final SalesObserver salesObserver;
 
     @PostConstruct
-    private void init() {
-        carService.addObserver(salesObserver);
+    private void HsePostConstr() {
+        hseCarService.AddObserver(reportSalesObserver);
+        hseCatamaranService.AddObserver(reportSalesObserver);
     }
 
-    /**
-     * Добавляет нового клиента в систему.
-     *
-     * @param name имя клиента
-     * @param legPower сила ног (1-10)
-     * @param handPower сила рук (1-10)
-     * @param iq уровень интеллекта (1-200)
-     * @example
-     * hse.addCustomer("Анна", 7, 5, 120);
-     */
-    public void addCustomer(String name, int legPower, int handPower, int iq) {
-        Customer customer = Customer.builder()
-                .name(name)
-                .legPower(legPower)
-                .handPower(handPower)
-                .iq(iq)
-                .build();
+    public void importTransport(TransportFormat format, Reader reader) throws RuntimeException {
+        TransportImporter importer = transportImportererFactory.create(format);
+
+        List<PureTransport> transports = importer.importer(reader);
+        transports.stream().filter(transport -> Objects.equals(transport.getTransportType(), "car")).forEach(transport -> carStorage.addExitingCar(transport.toCar()));
+        transports.stream().filter(transport -> Objects.equals(transport.getTransportType(), "catamaran")).forEach(transport -> catamaranStorage.addExitingCatamaran(transport.toCatamaran()));
+    }
+
+    public void exportTransport(TransportFormat format, Writer writer) throws RuntimeException {
+        TransportExporter exporter = transportExporterFactory.create(format);
+
+        List<Transport> transports = Stream.concat(
+                        carStorage.getCars().stream(),
+                        catamaranStorage.getCatamarans().stream())
+                .toList();
+
+        try {
+            exporter.export(transports, writer);
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
+
+    public void exportReport(ReportFormat format, Writer writer) throws RuntimeException {
+        Report report = reportSalesObserver.buildReport();
+        ReportExporter exporter = reportExporterFactory.create(format);
+
+        try {
+            exporter.export(report, writer);
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
+
+    // Старый метод для обратной совместимости
+    public String generateReport() {
+        return reportSalesObserver.buildReport().toString();
+    }
+
+    public void SellCars() {
+        hseCarService.sellCars();
+    }
+
+    public void SellCatamarans() {
+        hseCatamaranService.sellCatamarans();
+    }
+
+    public void AddObserver(SalesObserver salesObserver) {
+        hseCarService.AddObserver(salesObserver);
+        hseCatamaranService.AddObserver(salesObserver);
+    }
+
+    public void AddCustomer(Customer customer) {
         customerStorage.addCustomer(customer);
     }
 
-    /**
-     * Добавляет педальный автомобиль в систему.
-     *
-     * @param pedalSize размер педалей (1-15)
-     */
-    public void addPedalCar(int pedalSize) {
-        carStorage.addCar(pedalCarFactory, new PedalEngineParams(pedalSize));
+    public List<Customer> GetCustomers() {
+        return customerStorage.getCustomers();
     }
 
-    /**
-     * Добавляет автомобиль с ручным приводом.
-     */
-    public void addHandCar() {
+    public void AddHandCar() {
         carStorage.addCar(handCarFactory, EmptyEngineParams.DEFAULT);
     }
-
-    /**
-     * Добавляет левитирующий автомобиль.
-     */
-    public void addLevitationCar() {
+    public void AddPedalCar(PedalEngineParams pedalEngineParams) {
+        carStorage.addCar(pedalCarFactory, pedalEngineParams);
+    }
+    public void AddLevitationCar() {
         carStorage.addCar(levitationCarFactory, EmptyEngineParams.DEFAULT);
     }
 
-    public void addWheelCatamaran() {
-        carStorage.addExistingCar(new CatamaranWithWheels(createCatamaran()));
+    public void AddHandCatamaranWithWheels() {
+        carStorage.addExitingCar(catamaranWithWheelsFactory.create(catamaranStorage.createCatamaran(handCatamaranFactory, EmptyEngineParams.DEFAULT)));
+    }
+    public void AddPedalCatamaranWithWheels(PedalEngineParams pedalEngineParams) {
+        carStorage.addExitingCar(catamaranWithWheelsFactory.create(catamaranStorage.createCatamaran(pedalCatamaranFactory, pedalEngineParams)));
+    }
+    public void AddLevitationCatamaranWithWheels() {
+        carStorage.addExitingCar(catamaranWithWheelsFactory.create(catamaranStorage.createCatamaran(levitationCatamaranFactory, EmptyEngineParams.DEFAULT)));
     }
 
-    private Catamaran createCatamaran() {
-        var engineCount = new Random().nextInt(3);
-
-        return switch (engineCount) {
-            case 0 -> catamaranStorage.addCatamaran(handCatamaranFactory, EmptyEngineParams.DEFAULT);
-            case 1 -> catamaranStorage.addCatamaran(pedalCatamaranFactory, new PedalEngineParams(6));
-            case 2 -> catamaranStorage.addCatamaran(levitationCatamaranFactory, EmptyEngineParams.DEFAULT);
-            default -> throw new RuntimeException("nonono");
-        };
-    }
-
-    /**
-     * Добавляет педальный катамаран.
-     *
-     * @param pedalSize размер педалей (1-15)
-     */
-    public void addPedalCatamaran(int pedalSize) {
-        catamaranStorage.addCatamaran(pedalCatamaranFactory, new PedalEngineParams(pedalSize));
-    }
-
-    /**
-     * Добавляет катамаран с ручным приводом.
-     */
-    public void addHandCatamaran() {
+    public void AddHandCatamaran() {
         catamaranStorage.addCatamaran(handCatamaranFactory, EmptyEngineParams.DEFAULT);
     }
-
-    /**
-     * Добавляет левитирующий катамаран.
-     */
-    public void addLevitationCatamaran() {
+    public void AddPedalCatamaran(PedalEngineParams pedalEngineParams) {
+        catamaranStorage.addCatamaran(pedalCatamaranFactory, pedalEngineParams);
+    }
+    public void AddLevitationCatamaran() {
         catamaranStorage.addCatamaran(levitationCatamaranFactory, EmptyEngineParams.DEFAULT);
-    }
-
-    /**
-     * Запускает процесс продажи доступного транспорта.
-     * Автомобили продаются перед катамаранами.
-     */
-    public void sell() {
-        carService.sellCars();
-        catamaranService.sellCatamarans();
-    }
-
-    /**
-     * Генерирует отчет о продажах.
-     *
-     * @return форматированная строка с отчетом
-     * @example
-     * System.out.println(hse.generateReport());
-     */
-    public String generateReport() {
-        return salesObserver.buildReport().toString();
     }
 }

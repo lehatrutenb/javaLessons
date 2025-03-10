@@ -1,13 +1,12 @@
-package hse.kpo.observers;
+package hse.kpo.annotations;
 
+import hse.kpo.observers.SalesObserver;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 @Aspect
 @RequiredArgsConstructor
@@ -19,14 +18,13 @@ public class SalesAspect {
 
         salesObserver.checkCustomers();
 
+        String operationName = sales.value().isEmpty() ? pjp.getSignature().toShortString() : sales.value();
         try {
             Object result = pjp.proceed();
             salesObserver.checkCustomers();
             return result;
         } catch (Throwable e) {
-            log.warn(e.getMessage());
             throw e;
         }
     }
 }
-
