@@ -1,18 +1,20 @@
 package hse.kpo.enums;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 public enum EngineTypes {
-    HAND,
-    PEDAL,
-    LEVITATION;
+    HAND ("HAND"),
+    PEDAL ("PEDAL"),
+    LEVITATION ("LEVITATION");
 
-    public static Optional<EngineTypes> find(String typeName) {
-        switch (typeName) {
-            case "HAND"->{return Optional.of(HAND);}
-            case "PEDAL"->{return Optional.of(PEDAL);}
-            case "LEVITATION"->{return Optional.of(LEVITATION);}
-        }
-        throw new IllegalArgumentException("Unsupported engine type: " + typeName);
+    private final String name;
+
+    EngineTypes(String name) {
+        this.name = name;
+    }
+
+    public static Optional<EngineTypes> find(String name) {
+        return Arrays.stream(values()).filter(type -> type.name.equals(name)).findFirst();
     }
 }

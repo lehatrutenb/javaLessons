@@ -9,14 +9,17 @@ import hse.kpo.enums.ProductionTypes;
 import hse.kpo.interfaces.Engine;
 import hse.kpo.interfaces.Transport;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
  * Класс хранящий информацию о машине.
  */
 @ToString
+@NoArgsConstructor
 public class Car implements Transport {
 
+    @Getter
     private Engine engine;
 
     @Getter

@@ -2,11 +2,13 @@ package hse.kpo.domains;
 
 import hse.kpo.enums.ProductionTypes;
 import hse.kpo.interfaces.Engine;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
  * Класс, реализующий {@link Engine} ручного типа.
  */
+@NoArgsConstructor
 @ToString
 public class LevitationEngine implements Engine {
     @Override

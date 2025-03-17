@@ -35,6 +35,11 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter")
 
+	implementation("org.springframework.boot:spring-boot-starter-web")
+
+//	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
+
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 
@@ -45,11 +50,6 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-aop")
 
 	implementation("com.fasterxml.jackson.core:jackson-databind:2.18.2")
-	
-	// Spring Web (включает REST и Tomcat)
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	// Swagger UI и OpenAPI
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
 }
 
 tasks.withType<Test> {

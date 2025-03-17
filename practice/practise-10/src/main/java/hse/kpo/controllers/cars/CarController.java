@@ -1,74 +1,28 @@
-# Занятие 8. DDD
+package hse.kpo.controllers.cars;
 
-## Цель занятия
-- Изучение возможности общения с внешними сервисами, с помощью контролеров.
-## Требования к реализации
-1. Добавить возможность работы с машинами (crud + продажа) с помощью restController.
-2. Добавить валидацию запросов.
-3. Добавить возможность просмотра через swagger.
-## Тестирование
-1. Отправить в swagger запросы на crud операции машины + продажу.
-## Задание на доработку
-- Добавить контроллеры для катамаранов, покупателей, отчетов работы системы/транспорта
-## Пояснения к реализации
-Добавьте зависимости в build.gradle
-```
-   dependencies {
-   // Spring Web (включает REST и Tomcat)
-   implementation("org.springframework.boot:spring-boot-starter-web")
-   // Swagger UI и OpenAPI
-   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
-   }
-```
+import hse.kpo.domains.HandEngine;
+import hse.kpo.domains.LevitationEngine;
+import hse.kpo.domains.PedalEngine;
+import hse.kpo.domains.cars.Car;
+import hse.kpo.dto.CarRequest;
+import hse.kpo.enums.EngineTypes;
+import hse.kpo.facade.Hse;
+import hse.kpo.interfaces.Engine;
+import hse.kpo.services.cars.HseCarService;
+import hse.kpo.storages.CarStorage;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-В папке config внутри hse.kpo создать конфигурацию Swagger
-```
-@Configuration
-public class SwaggerConfig {
-    @Bean
-    public OpenAPI customOpenAPI() {
-        return new OpenAPI()
-                .info(new Info()
-                        .title("HSE Car Service API")
-                        .version("1.0")
-                        .description("API для управления автомобилями"));
-    }
-}
-```
+import java.util.List;
 
-```
-public record CarRequest(
-        @Schema(description = "Тип двигателя (PEDAL, HAND, LEVITATION)", example = "PEDAL")
-        @Pattern(regexp = "PEDAL|HAND|LEVITATION", message = "Допустимые значения: PEDAL, HAND, LEVITATION")
-        String engineType,
-
-        @Schema(description = "Размер педалей (1-15)", example = "6")
-        @Min(value = 1, message = "Минимальный размер педалей - 1")
-        @Max(value = 15, message = "Максимальный размер педалей - 15")
-        @Nullable
-        Integer pedalSize
-) {}
-```
-
-```
-public enum EngineTypes {
-HAND ("HAND"),
-PEDAL ("PEDAL"),
-LEVITATION ("LEVITATION");
-
-    private final String name;
-
-    EngineTypes(String name) {
-        this.name = name;
-    }
-
-    public static Optional<EngineTypes> find(String name) {
-        return Arrays.stream(values()).filter(type -> type.name.equals(name)).findFirst();
-    }
-}
-```
-
-```
 @RestController
 @RequestMapping("/api/cars")
 @RequiredArgsConstructor
@@ -78,7 +32,6 @@ public class CarController {
     private final HseCarService carService;
     private final Hse hseFacade;
 
-    // GET by VIN
     @GetMapping("/{vin}")
     @Operation(summary = "Получить автомобиль по VIN")
     public ResponseEntity<Car> getCarByVin(@PathVariable int vin) {
@@ -190,38 +143,4 @@ public class CarController {
         };
         return new Car(vin, engine);
     }
-```
-
-```
-    /**
-     * Добавляет педальный автомобиль в систему.
-     *
-     * @param pedalSize размер педалей (1-15)
-     */
-    public Car addPedalCar(int pedalSize) {
-        return carStorage.addCar(pedalCarFactory, new PedalEngineParams(pedalSize));
-    }
-
-    /**
-     * Добавляет автомобиль с ручным приводом.
-     */
-    public Car addHandCar() {
-        return carStorage.addCar(handCarFactory, EmptyEngineParams.DEFAULT);
-    }
-
-    /**
-     * Добавляет левитирующий автомобиль.
-     */
-    public Car addLevitationCar() {
-        return carStorage.addCar(levitationCarFactory, EmptyEngineParams.DEFAULT);
-    }
-```
-
-<details> 
-<summary>Ссылки</summary>
-1. https://proglib.io/p/chto-takoe-api-i-crud-prostymi-slovami
-2. https://javarush.com/groups/posts/3160-spring---ehto-ne-strashno-kontroliruem-svoy-rest
-3. https://habr.com/ru/articles/541592/
-4. https://www.postman.com/
-5. http://localhost:8080/swagger-ui/index.html#/
-</details>
+}
