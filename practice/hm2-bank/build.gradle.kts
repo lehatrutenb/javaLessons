@@ -50,6 +50,7 @@ dependencies {
 	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.18.3")
 	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.3")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.3")
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 }
 
 tasks.withType<Test> {
@@ -61,4 +62,13 @@ tasks.test {
 }
 tasks.jacocoTestReport {
 	dependsOn(tasks.test) // tests are required to run before generating the report
+	classDirectories.setFrom(
+		classDirectories.files.map {
+			fileTree(it) {
+				exclude(
+					"**/HseBankApplication.class",
+				)
+			}
+		}
+	)
 }

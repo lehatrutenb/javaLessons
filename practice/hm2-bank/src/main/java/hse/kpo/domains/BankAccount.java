@@ -1,5 +1,6 @@
 package hse.kpo.domains;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import hse.kpo.interfaces.CsvExportable;
 import lombok.Getter;
 import lombok.Setter;

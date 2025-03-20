@@ -30,17 +30,16 @@ public class BankImporterFacade {
     private final CategoryStorageI categoryStorage;
     private final ExporterVisitorI exporterVisitor;
 
-    private final JsonObjectImporter<BankAccountReport> bankAccountJsonObjectImporter;
-    private final JsonObjectImporter<CategoryReport> categoryJsonObjectImporter;
-    private final JsonObjectImporter<OperationReport> operationJsonObjectImporter;
-
-    private final YamlObjectImporter<BankAccountReport> bankAccountYamlObjectImporter;
-    private final YamlObjectImporter<CategoryReport> categoryYamlObjectImporter;
-    private final YamlObjectImporter<OperationReport> operationYamlObjectImporter;
+    private final JsonObjectImporter jsonObjectImporter;
+    private final YamlObjectImporter yamlObjectImporter;
 
     private final CsvBankAccountImporter bankAccountCsvImporter;
     private final CsvCategoryImporter categoryCsvImporter;
     private final CsvOperationImporter operationCsvImporter;
+
+    private final BankAccountFactory bankAccountFactory;
+    private final OperationFactory operationFactory;
+    private final CategoryFactory categoryFactory;
 
     public void importAll(DataType dataType) throws Throwable {
         switch (dataType) {
@@ -65,25 +64,49 @@ public class BankImporterFacade {
 
     private void importJson() throws Throwable {
         try (FileReader fileReader = new FileReader("BankAccounts")) {
-            bankAccountStorage.addReport(bankAccountJsonObjectImporter.parse(new BufferedReader(fileReader), BankAccountReport.class));
+            bankAccountStorage.addReport(new BankAccountReport(
+                    jsonObjectImporter.parse(new BufferedReader(fileReader)).stream().map(
+                            bankAccountFactory::fromJsonMap
+                            ).toList()
+            ));
         }
         try (FileReader fileReader = new FileReader("Categories")) {
-            categoryStorage.addReport(categoryJsonObjectImporter.parse(new BufferedReader(fileReader), CategoryReport.class));
+            categoryStorage.addReport(new CategoryReport(
+                    jsonObjectImporter.parse(new BufferedReader(fileReader)).stream().map(
+                            categoryFactory::fromJsonMap
+                    ).toList()
+            ));
         }
         try (FileReader fileReader = new FileReader("Operations")) {
-            operationStorage.addReport(operationJsonObjectImporter.parse(new BufferedReader(fileReader), OperationMementoReport.class));
+            operationStorage.addReport(new OperationReport(
+                    jsonObjectImporter.parse(new BufferedReader(fileReader)).stream().map(
+                            operationFactory::fromJsonMap
+                    ).toList()
+            ));
         }
     }
 
     private void importYaml() throws Throwable {
         try (FileReader fileReader = new FileReader("BankAccounts")) {
-            bankAccountStorage.addReport(bankAccountYamlObjectImporter.parse(new BufferedReader(fileReader), BankAccountReport.class));
+            bankAccountStorage.addReport(new BankAccountReport(
+                    yamlObjectImporter.parse(new BufferedReader(fileReader)).stream().map(
+                            bankAccountFactory::fromJsonMap
+                    ).toList()
+            ));
         }
         try (FileReader fileReader = new FileReader("Categories")) {
-            categoryStorage.addReport(categoryYamlObjectImporter.parse(new BufferedReader(fileReader), CategoryReport.class));
+            categoryStorage.addReport(new CategoryReport(
+                    yamlObjectImporter.parse(new BufferedReader(fileReader)).stream().map(
+                            categoryFactory::fromJsonMap
+                    ).toList()
+            ));
         }
         try (FileReader fileReader = new FileReader("Operations")) {
-            operationStorage.addReport(operationYamlObjectImporter.parse(new BufferedReader(fileReader), OperationMementoReport.class));
+            operationStorage.addReport(new OperationReport(
+                    yamlObjectImporter.parse(new BufferedReader(fileReader)).stream().map(
+                            operationFactory::fromJsonMap
+                    ).toList()
+            ));
         }
     }
 }

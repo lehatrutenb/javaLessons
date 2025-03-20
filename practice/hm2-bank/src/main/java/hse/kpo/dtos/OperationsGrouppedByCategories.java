@@ -4,17 +4,18 @@ import hse.kpo.domains.Category;
 import hse.kpo.domains.Operation;
 import kotlin.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class OperationsGrouppedByCategories {
-    List<List<Operation>> operations;
-    List<Category> categories;
+    List<List<Operation>> operations = new ArrayList<>();
+    List<Category> categories = new ArrayList<>();
 
     public void add(List<Operation> operations, Category category) {
         /*int categoryInd = -1;
         for (int i = 0; i < categories.size(); i++) {
-            if (categories.get(i).getId() == category.getId()) {
+            if (categories.get(i).getId().equals(category.getId())) {
                 categoryInd = i;
                 break;
             }
@@ -22,7 +23,7 @@ public class OperationsGrouppedByCategories {
         int categoryInd = categories.indexOf(category);
         if (categoryInd == -1) {
             categories.add(category);
-            this.operations.add(List.of());
+            this.operations.add(new ArrayList<>());
             categoryInd = categories.size() - 1;
         }
 
@@ -36,7 +37,7 @@ public class OperationsGrouppedByCategories {
         }
         Pair<List<Operation>, Category> res = new Pair<>(operations.getFirst(), categories.getFirst());
         operations.removeFirst();
-        categories.removeLast();
+        categories.removeFirst();
         return Optional.of(res);
     }
 }

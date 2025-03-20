@@ -31,7 +31,7 @@ public class Operation {
 
     @Getter
     @Setter
-    private String description;
+    private String description = "";
 
     @Getter
     private final Category category;

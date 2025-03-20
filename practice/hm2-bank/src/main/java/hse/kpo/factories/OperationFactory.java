@@ -4,12 +4,15 @@ import hse.kpo.domains.BankAccount;
 import hse.kpo.domains.Category;
 import hse.kpo.domains.Operation;
 import hse.kpo.domains.OperationMemento;
+import hse.kpo.enums.OperationType;
 import hse.kpo.interfaces.BankAccountSearcherI;
 import hse.kpo.interfaces.CategorySearcherI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -50,5 +53,12 @@ public class OperationFactory {
         String[] attrs = s.split(",");
         return restore(new OperationMemento(attrs[0], attrs[1], Integer.parseInt(attrs[2]),
                 LocalDateTime.parse(attrs[3]), attrs[4], attrs[5]));
+    }
+
+    public Operation fromJsonMap(Map<String, Object> map) {
+        return restore(new OperationMemento(map.get("id").toString(), map.get("bankAccountId").toString(),
+                Integer.parseInt(map.get("sum").toString()),
+                LocalDateTime.parse(map.get("timestamp").toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")),
+                map.get("description").toString(), map.get("categoryId").toString()));
     }
 }

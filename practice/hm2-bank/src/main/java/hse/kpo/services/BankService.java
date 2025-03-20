@@ -23,7 +23,7 @@ public class BankService {
     private CategoryStorageI categoryStorage;
     public int calcOperationSumChangeInPeriod(String bankAccountId, LocalDateTime start, LocalDateTime end) {
         return operationStorage.getReport().getReport().stream()
-                .filter(operation -> operation.getId().equals(bankAccountId))
+                .filter(operation -> operation.getBankAccount().getId().equals(bankAccountId))
                 .filter(operation -> operation.getTimestamp().isAfter(start) && operation.getTimestamp().isBefore(end))
                 .reduce(
                 0, (sum, operation) -> sum + operation.getSum(), Integer::sum
@@ -33,7 +33,7 @@ public class BankService {
     public OperationsGrouppedByCategories getOperationsGrouppedByCategories(String bankAccountId) {
         OperationsGrouppedByCategories res = new OperationsGrouppedByCategories();
         operationStorage.getReport().getReport().stream()
-                .filter(operation -> operation.getId().equals(bankAccountId))
+                .filter(operation -> operation.getBankAccount().getId().equals(bankAccountId))
                 .forEach(operation -> res.add(List.of(operation), operation.getCategory()));
         return res;
     }
