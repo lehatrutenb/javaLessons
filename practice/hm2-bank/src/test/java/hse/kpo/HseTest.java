@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.io.StringWriter;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -61,6 +62,23 @@ class HseTest {
         assertAll(
                 () -> assertEquals(-1, hseBankFacade.calcOperationSumChangeInPeriod("1", LocalDateTime.now().minusDays(1), LocalDateTime.now().plusDays(1)),
                         "1 + -2 = -1 в результате операций")
+        );
+    }
+
+    @Test
+    @DisplayName("тест что пересчёт баланса через операции работает корректно")
+    void testRecalcBalanceBasedOnOperations() {
+        hseBankFacade.addBankAccount("1", "2", 3);
+        hseBankFacade.addCategory(OperationType.EARNING, "4", "earning");
+        hseBankFacade.addOperation("6", "1", 1, "4");
+        hseBankFacade.addOperation("7", "1", -2, "4");
+        hseBankFacade.addOperation("8", "1", -5, "4");
+        hseBankFacade.addOperation("9", "1", 10, "4");
+
+        hseBankFacade.recalcBalanceBasedOnOperations("1");
+        assertAll(
+                () -> assertEquals(4, hseBankFacade.getBankAccounts().getFirst().getBalance(),
+                        "1 + -2 + -5 + 10 = 4 в результате операций")
         );
     }
 
@@ -125,6 +143,59 @@ class HseTest {
         hseBankFacade.importAll(DataType.JSON);
     }
 
+    private void testDataSame() {
+        assertAll(
+                () -> assertEquals(2, hseBankFacade.getBankAccounts().size(),
+                        "кол-во банковских аккаунтов"),
+                () -> assertEquals(2, hseBankFacade.getCategories().size(),
+                        "кол-во категорий"),
+                () -> assertEquals(2, hseBankFacade.getOperationsByAccountId("1").size(),
+                        "кол-во операций")
+        );
+
+        assertAll(
+                () -> assertEquals("1", hseBankFacade.getBankAccounts().getFirst().getId(),
+                        "оригинальный банковский аккаунт"),
+                () -> assertEquals("1", hseBankFacade.getBankAccounts().getLast().getId(),
+                        "скопированный банковский аккаунт"),
+                () -> assertEquals("4", hseBankFacade.getCategories().getFirst().getId(),
+                        "оригинальная категория"),
+                () -> assertEquals("4", hseBankFacade.getCategories().getLast().getId(),
+                        "скопированная категория"),
+                () -> assertEquals("6", hseBankFacade.getOperationsByAccountId("1").getFirst().id,
+                        "оригинальная операция"),
+                () -> assertEquals("6", hseBankFacade.getOperationsByAccountId("1").getLast().id,
+                        "скопированная операция")
+        );
+
+        assertAll(
+                () -> assertEquals("2", hseBankFacade.getBankAccounts().getFirst().getName(),
+                        "оригинальный банковский аккаунт"),
+                () -> assertEquals("2", hseBankFacade.getBankAccounts().getLast().getName(),
+                        "скопированный банковский аккаунт"),
+                () -> assertEquals(OperationType.EARNING, hseBankFacade.getCategories().getFirst().getOperationType(),
+                        "оригинальная категория"),
+                () -> assertEquals(OperationType.EARNING, hseBankFacade.getCategories().getLast().getOperationType(),
+                        "скопированная категория"),
+                () -> assertEquals(1, hseBankFacade.getOperationsByAccountId("1").getFirst().sum,
+                        "оригинальная операция"),
+                () -> assertEquals(1, hseBankFacade.getOperationsByAccountId("1").getLast().sum,
+                        "скопированная операция")
+        );
+    }
+
+    @Test
+    @DisplayName("тест что экспорт и импорт данных json не портит данные")
+    void testExportImortJsonCheckSameObjects() throws Throwable {
+        hseBankFacade.addBankAccount("1", "2", 3);
+        hseBankFacade.addCategory(OperationType.EARNING, "4", "earning");
+        hseBankFacade.addOperation("6", "1", 1, "4");
+        hseBankFacade.exportAll(DataType.JSON);
+        hseBankFacade.importAll(DataType.JSON);
+
+        testDataSame();
+    }
+
     @Test
     @DisplayName("тест что экспорт и импорт данных yaml работает без ошибок")
     void testExportImortYaml() throws Throwable {
@@ -138,7 +209,19 @@ class HseTest {
         hseBankFacade.importAll(DataType.YAML);
     }
 
-    /*
+    @Test
+    @DisplayName("тест что экспорт и импорт данных yaml не портит данные")
+    void testExportImortYamlCheckSameObjects() throws Throwable {
+        hseBankFacade.addBankAccount("1", "2", 3);
+        hseBankFacade.addCategory(OperationType.EARNING, "4", "earning");
+        hseBankFacade.addOperation("6", "1", 1, "4");
+        hseBankFacade.exportAll(DataType.YAML);
+        hseBankFacade.importAll(DataType.YAML);
+
+        testDataSame();
+    }
+
+
     @Test
     @DisplayName("тест что экспорт и импорт данных csv работает без ошибок")
     void testExportImortCsv() throws Throwable {
@@ -150,5 +233,42 @@ class HseTest {
         hseBankFacade.addOperation("8", "1", -2, "5");
         hseBankFacade.exportAll(DataType.CSV);
         hseBankFacade.importAll(DataType.CSV);
-    }*/
+    }
+
+    @Test
+    @DisplayName("тест что экспорт и импорт данных csv не портит данные")
+    void testExportImortCsvCheckSameObjects() throws Throwable {
+        hseBankFacade.addBankAccount("1", "2", 3);
+        hseBankFacade.addCategory(OperationType.EARNING, "4", "earning");
+        hseBankFacade.addOperation("6", "1", 1, "4");
+        hseBankFacade.exportAll(DataType.CSV);
+        hseBankFacade.importAll(DataType.CSV);
+
+        testDataSame();
+    }
+
+    @Test
+    @DisplayName("тест отслеживания времени (exportAll имеет @MeasureTime)")
+    void testMeasureTime() throws Throwable {
+        hseBankFacade.addBankAccount("1", "2", 3);
+        hseBankFacade.addCategory(OperationType.EARNING, "4", "earning");
+        hseBankFacade.addCategory(OperationType.SPENDING, "5", "spending");
+        hseBankFacade.addOperation("6", "1", 1, "4");
+        hseBankFacade.addOperation("7", "1", -2, "5");
+        hseBankFacade.addOperation("8", "1", -2, "5");
+
+        hseBankFacade.exportAll(DataType.CSV);
+
+        StringWriter writerCsv = new StringWriter();
+        hseBankFacade.buildDurationData(DataType.CSV, writerCsv);
+        System.out.println(writerCsv.toString());
+
+        StringWriter writerJson = new StringWriter();
+        hseBankFacade.buildDurationData(DataType.JSON, writerJson);
+        System.out.println(writerJson.toString());
+
+        StringWriter writerYaml = new StringWriter();
+        hseBankFacade.buildDurationData(DataType.YAML, writerYaml);
+        System.out.println(writerYaml.toString());
+    }
 }

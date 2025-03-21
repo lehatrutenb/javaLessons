@@ -18,6 +18,6 @@ public class BankAccountFactory {
     }
 
     public BankAccount fromJsonMap(Map<String, Object> map) {
-        return new BankAccount(map.get("id").toString(), map.get("name").toString(), Integer.parseInt(map.get("id").toString()));
+        return new BankAccount(map.get("id").toString(), map.get("name").toString(), Integer.parseInt(map.get("balance").toString()));
     }
 }

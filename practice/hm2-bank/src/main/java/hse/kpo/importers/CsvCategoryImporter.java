@@ -9,13 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 
 @Component
 public class CsvCategoryImporter implements CsvObjectImporterI<CategoryReport> {
     @Autowired
     private CategoryFactory categoryFactory;
     @Override
-    public CategoryReport parse(BufferedReader reader) {
+    public CategoryReport parse(BufferedReader reader) throws IOException {
+        reader.readLine();
         return new CategoryReport(reader.lines().map(
                 line -> categoryFactory.fromCsvString(line)).toList());
     }

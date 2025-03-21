@@ -1,18 +1,20 @@
 package hse.kpo.factories;
 
 import hse.kpo.domains.DurationReport;
+import hse.kpo.domains.DurationReportElement;
 import hse.kpo.enums.DataType;
 import hse.kpo.exporters.CsvDurationReportExporter;
 import hse.kpo.exporters.JsonDurationReportExporter;
 import hse.kpo.exporters.YamlDurationReportExporter;
 import hse.kpo.interfaces.ExporterI;
 import hse.kpo.interfaces.ReportExporterFactoryI;
+import hse.kpo.interfaces.ReportI;
 import org.springframework.stereotype.Component;
 
-/*@Component
-public class DurationReportExporterFactory implements ReportExporterFactoryI<DurationReport> {
+@Component
+public class DurationReportExporterFactory implements ReportExporterFactoryI<ReportI<DurationReportElement>> {
     @Override
-    public ExporterI<DurationReport> create(DataType dataType) {
+    public ExporterI<ReportI<DurationReportElement>> create(DataType dataType) {
         switch (dataType) {
             case CSV -> {return new CsvDurationReportExporter();}
             case YAML -> {return new YamlDurationReportExporter();}
@@ -21,4 +23,3 @@ public class DurationReportExporterFactory implements ReportExporterFactoryI<Dur
         }
     }
 }
-*/

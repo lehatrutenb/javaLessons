@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import hse.kpo.domains.BankAccount;
 import hse.kpo.domains.BankAccountReport;
-import hse.kpo.importers.deserializers.BankAccountDeserializer;
 import hse.kpo.interfaces.ReportI;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;

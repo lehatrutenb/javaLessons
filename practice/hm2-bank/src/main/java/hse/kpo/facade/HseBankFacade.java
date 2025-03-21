@@ -1,17 +1,17 @@
 package hse.kpo.facade;
 
-import hse.kpo.domains.BankAccount;
-import hse.kpo.domains.Category;
-import hse.kpo.domains.OperationMemento;
-import hse.kpo.domains.OperationMementoReport;
+import hse.kpo.builders.ReportBuilder;
+import hse.kpo.domains.*;
 import hse.kpo.dtos.OperationsGrouppedByCategories;
 import hse.kpo.enums.DataType;
 import hse.kpo.enums.OperationType;
 import hse.kpo.factories.BankAccountFactory;
 import hse.kpo.factories.CategoryFactory;
 //import hse.kpo.factories.DurationReportExporterFactory;
+import hse.kpo.factories.DurationReportExporterFactory;
 import hse.kpo.factories.OperationFactory;
 import hse.kpo.interfaces.*;
+import hse.kpo.observers.MeasureDuration;
 import hse.kpo.services.BankService;
 import hse.kpo.storages.BankAccountStorage;
 import hse.kpo.storages.CategoryStorage;
@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -38,7 +39,10 @@ public class HseBankFacade {
     private final BankExporterFacade bankExporterFacade;
     private final BankImporterFacade bankImporterFacade;
     private final BankService bankService;
+    private final ReportBuilder<DurationReportElement> durationReportBuilder;
+    private final DurationReportExporterFactory durationReportExporterFactory;
 
+    @MeasureDuration
     public void exportAll(DataType dataType) throws Throwable {
         bankExporterFacade.exportAll(dataType);
     }
@@ -73,5 +77,13 @@ public class HseBankFacade {
     }
     public List<Category> getCategories() {
         return categoryStorage.getReport().getReport();
+    }
+
+    public void buildDurationData(DataType dataType, Writer writer) throws Throwable {
+        durationReportBuilder.createReport(durationReportExporterFactory.create(dataType), writer);
+    }
+
+    public void recalcBalanceBasedOnOperations(String bankAccountId) {
+        bankService.recalcBalanceBasedOnOperations(bankAccountId);
     }
 }

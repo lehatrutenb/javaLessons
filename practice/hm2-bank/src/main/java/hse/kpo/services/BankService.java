@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class BankService {
@@ -21,6 +22,7 @@ public class BankService {
     private BankAccountStorageI bankAccountStorage;
     @Autowired
     private CategoryStorageI categoryStorage;
+
     public int calcOperationSumChangeInPeriod(String bankAccountId, LocalDateTime start, LocalDateTime end) {
         return operationStorage.getReport().getReport().stream()
                 .filter(operation -> operation.getBankAccount().getId().equals(bankAccountId))
@@ -30,6 +32,16 @@ public class BankService {
                 );
     }
 
+    public void recalcBalanceBasedOnOperations(String bankAccountId) {
+        Optional<BankAccount> bankAccount = bankAccountStorage.getReport().getReport().stream()
+                .filter(account -> account.getId().equals(bankAccountId))
+                .findFirst();
+        if (bankAccount.isEmpty()) {
+            return;
+        }
+        bankAccount.get().setBalance(calcOperationSumChangeInPeriod(bankAccountId, LocalDateTime.now().minusYears(100), LocalDateTime.now()));
+    }
+
     public OperationsGrouppedByCategories getOperationsGrouppedByCategories(String bankAccountId) {
         OperationsGrouppedByCategories res = new OperationsGrouppedByCategories();
         operationStorage.getReport().getReport().stream()
@@ -37,6 +49,8 @@ public class BankService {
                 .forEach(operation -> res.add(List.of(operation), operation.getCategory()));
         return res;
     }
+
+
 
     public List<OperationMemento> getOperationsByAccountId(String id) {
         return new OperationMementoReport(operationStorage.getReport()).getReport().stream().filter(operation -> operation.bankAccountId.equals(id)).toList();

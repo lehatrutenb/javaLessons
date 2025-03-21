@@ -9,40 +9,6 @@ import java.io.Writer;
 
 @Component
 public class CsvObjectExporterVisitorI implements ExporterVisitorI {
-    /*@Override
-    public void export(ReportI<CsvConvertable> data, Writer writer) throws IOException {
-        if (data.getReport().isEmpty()) {
-            writer.write((new BankAccount("1","1",1)).csvHeader() + "\n");
-            return;
-        }
-        writer.write(data.getReport().getFirst().csvHeader() + "\n");
-        data.getReport().forEach(element -> {
-            try {
-                writer.write(element.toCsvString() + "\n");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }*/
-    /*
-    @Override
-    public String csvHeader() {
-        return "id,name,balance";
-    }
-
-    @Override
-    public String toCsvString() {
-        return String.format("%s,%s,%d", id, name, balance);
-    }
-
-    @Override
-    public void parse(String s) {
-        String[] attrs = s.split(",");
-        id = attrs[0];
-        name = attrs[1];
-        balance = Integer.parseInt(attrs[2]);
-    }
-     */
     private Writer writer;
 
     @Override

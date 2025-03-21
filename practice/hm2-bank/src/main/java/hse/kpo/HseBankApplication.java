@@ -15,6 +15,7 @@ import java.util.Scanner;
  */
 @SpringBootApplication
 public class HseBankApplication {
+	@Autowired
 	private HseBankFacade hseBankFacade;
 	public static void main(String[] args) {
 		ApplicationContext context = SpringApplication.run(HseBankApplication.class, args);
@@ -39,6 +40,7 @@ public class HseBankApplication {
 			}
 			switch (input) {
 				case "export":
+					System.out.println("want data type to export to (CSV/YAML/JSON)");
 					if (!scanner.hasNextLine()) {
 						System.out.println("expected line with params after export");
 					}
@@ -46,6 +48,7 @@ public class HseBankApplication {
 					hseBankFacade.exportAll(DataType.valueOf(type));
 					break;
 				case "import":
+					System.out.println("want data type to input from (CSV/YAML/JSON)");
 					if (!scanner.hasNextLine()) {
 						System.out.println("expected line with params after import");
 					}
@@ -74,7 +77,7 @@ public class HseBankApplication {
 						System.out.println("expected line with params after import");
 					}
 					params = scanner.nextLine().split(" ");
-					hseBankFacade.addOperation(params[0], params[1], Integer.parseInt(params[3]), params[4]);
+					hseBankFacade.addOperation(params[0], params[1], Integer.parseInt(params[2]), params[3]);
 					break;
 				case "getOperationByAccountId":
 					System.out.println("want bankAccountId");
@@ -83,6 +86,14 @@ public class HseBankApplication {
 					}
 					params = scanner.nextLine().split(" ");
 					System.out.println(hseBankFacade.getOperationsByAccountId(params[0]));
+					break;
+				case "recalcBalanceBasedOnOperations":
+					System.out.println("want bankAccountId");
+					if (!scanner.hasNextLine()) {
+						System.out.println("expected line with params after import");
+					}
+					params = scanner.nextLine().split(" ");
+					hseBankFacade.recalcBalanceBasedOnOperations(params[0]);
 					break;
 				case "getBankAccounts":
 					System.out.println(hseBankFacade.getBankAccounts());

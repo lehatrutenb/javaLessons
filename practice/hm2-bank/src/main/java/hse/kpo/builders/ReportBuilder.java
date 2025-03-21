@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.io.Writer;
 import java.util.List;
 
-//@Component
+@Component
 @RequiredArgsConstructor
 public class ReportBuilder<T> {
     private final ReportI<T> report;

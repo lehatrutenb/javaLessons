@@ -17,7 +17,8 @@ public class CsvBankAccountImporter implements CsvObjectImporterI<BankAccountRep
     @Autowired
     private BankAccountFactory bankAccountFactory;
     @Override
-    public BankAccountReport parse(BufferedReader reader) {
+    public BankAccountReport parse(BufferedReader reader) throws IOException {
+        reader.readLine();
         return new BankAccountReport(reader.lines().map(
                 line -> bankAccountFactory.fromCsvString(line)).toList());
     }

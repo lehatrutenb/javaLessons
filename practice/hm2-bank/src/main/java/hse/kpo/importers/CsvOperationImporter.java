@@ -11,13 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 
 @Component
 public class CsvOperationImporter implements CsvObjectImporterI<OperationReport> {
     @Autowired
     private OperationFactory operationFactory;
     @Override
-    public OperationReport parse(BufferedReader reader) {
+    public OperationReport parse(BufferedReader reader) throws IOException {
+        reader.readLine();
         return new OperationReport(reader.lines().map(
                 line -> operationFactory.fromCsvString(line)).toList());
     }

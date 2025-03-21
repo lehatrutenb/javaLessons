@@ -11,5 +11,5 @@ import java.io.Reader;
 
 @Component
 public interface CsvObjectImporterI<T> {
-    public T parse(BufferedReader reader);
+    public T parse(BufferedReader reader) throws IOException;
 }
