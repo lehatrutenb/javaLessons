@@ -9,7 +9,6 @@
 ## Задание на доработку
 - 
 ## Пояснения к реализации
-Добавьте зависимости в build.gradle
 
 ```
 package hse.kpo.exception;
@@ -36,7 +35,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "hse.kpo")
 public class KpoExceptionHandler {
     @ExceptionHandler(KpoException.class)
     public ResponseEntity<KpoException> handleKpoException(KpoException ex) {
@@ -70,7 +69,41 @@ public class KpoExceptionHandler {
 5) Отправьте запросы к включенному сервису
 
 ```
+@SpringBootTest
+@AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+class CarControllerTest {
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
 
+   @Test
+    @DisplayName("Создание педального автомобиля с валидными параметрами")
+    void createPedalCar_ValidData_Returns2012() throws Exception {
+        CarRequest request = new CarRequest("PEDAL", 10);
+
+        String responseJson = mockMvc.perform(post("/api/cars")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andReturn().getResponse().getContentAsString();
+
+        CarResponse response = objectMapper.readValue(responseJson, CarResponse.class);
+        assertAll(
+                () -> assertNotNull(response.vin(), "VIN должен быть присвоен"),
+                () -> assertEquals(EngineTypes.PEDAL.name(), response.engineType(),
+                        "Тип двигателя должен быть PEDAL")
+        );
+    }
+}
+```
+```
+public record CarResponse(
+Integer vin,
+String engineType,
+Integer pedalSize
+) {}
 ```
 <details> 
 <summary>Ссылки</summary>

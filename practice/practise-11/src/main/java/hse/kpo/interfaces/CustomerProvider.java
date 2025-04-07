@@ -1,6 +1,8 @@
 package hse.kpo.interfaces;
 
 import hse.kpo.domains.Customer;
+import hse.kpo.storages.CustomerStorage;
+
 import java.util.List;
 
 /**
@@ -13,4 +15,10 @@ public interface CustomerProvider {
      * @return список {@link Customer}
      */
     List<Customer> getCustomers();
+
+    void addCustomer(Customer customer);
+
+    boolean updateCustomer(Customer updatedCustomer);
+
+    boolean deleteCustomer(String name);
 }

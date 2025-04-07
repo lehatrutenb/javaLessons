@@ -8,6 +8,13 @@
       </Engine>
   </Vehicle>
   <Vehicle>
+      <VIN>5</VIN>
+      <Type>CAR</Type>
+      <Engine>
+          <Type>HAND</Type>
+      </Engine>
+  </Vehicle>
+  <Vehicle>
       <VIN>6</VIN>
       <Type>CAR</Type>
       <Engine>

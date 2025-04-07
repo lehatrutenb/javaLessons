@@ -363,11 +363,13 @@ package hse.kpo.domains;
 
 import hse.kpo.enums.ProductionTypes;
 import hse.kpo.interfaces.Engine;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
  * Класс, реализующий {@link Engine} ручного типа.
  */
+@NoArgsConstructor
 @ToString
 public class HandEngine implements Engine {
     @Override
@@ -440,11 +442,13 @@ package hse.kpo.domains;
 
 import hse.kpo.enums.ProductionTypes;
 import hse.kpo.interfaces.Engine;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
  * Класс, реализующий {@link Engine} ручного типа.
  */
+@NoArgsConstructor
 @ToString
 public class LevitationEngine implements Engine {
     @Override
@@ -490,14 +494,17 @@ import hse.kpo.enums.ProductionTypes;
 import hse.kpo.interfaces.Engine;
 import hse.kpo.interfaces.Transport;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
  * Класс хранящий информацию о машине.
  */
 @ToString
+@NoArgsConstructor
 public class Car implements Transport {
 
+    @Getter
     private Engine engine;
 
     @Getter
@@ -1179,17 +1186,14 @@ public interface ReportExporter {
     void export(Report report, Writer writer) throws IOException;
 }package hse.kpo.controllers.cars;
 
+import hse.kpo.domains.HandEngine;
+import hse.kpo.domains.LevitationEngine;
+import hse.kpo.domains.PedalEngine;
 import hse.kpo.domains.cars.Car;
 import hse.kpo.dto.CarRequest;
 import hse.kpo.enums.EngineTypes;
 import hse.kpo.facade.Hse;
-import hse.kpo.factories.cars.HandCarFactory;
-import hse.kpo.factories.cars.LevitationCarFactory;
-import hse.kpo.factories.cars.PedalCarFactory;
 import hse.kpo.interfaces.Engine;
-import hse.kpo.interfaces.cars.CarFactory;
-import hse.kpo.params.EmptyEngineParams;
-import hse.kpo.params.PedalEngineParams;
 import hse.kpo.services.cars.HseCarService;
 import hse.kpo.storages.CarStorage;
 import io.swagger.v3.oas.annotations.Operation;
@@ -1204,7 +1208,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/cars")
@@ -1214,6 +1217,16 @@ public class CarController {
     private final CarStorage carStorage;
     private final HseCarService carService;
     private final Hse hseFacade;
+
+    @GetMapping("/{vin}")
+    @Operation(summary = "Получить автомобиль по VIN")
+    public ResponseEntity<Car> getCarByVin(@PathVariable int vin) {
+        return carStorage.getCars().stream()
+                .filter(car -> car.getVin() == vin)
+                .findFirst()
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 
     @PostMapping
     @Operation(summary = "Создать автомобиль",
@@ -1240,18 +1253,56 @@ public class CarController {
             default -> throw new RuntimeException();
         };
 
-        carStorage.addExistingCar(car);
         return ResponseEntity.status(HttpStatus.CREATED).body(car);
     }
 
-    private Object getParams(CarRequest request) {
-        return switch (request.engineType()) {
-            case "PEDAL" -> new PedalEngineParams(
-                    Optional.ofNullable(request.pedalSize())
-                            .orElseThrow(() -> new IllegalArgumentException("pedalSize обязателен для PEDAL"))
-            );
-            default -> EmptyEngineParams.DEFAULT;
-        };
+    @PostMapping("/sell")
+    @Operation(summary = "Продать все доступные автомобили")
+    public ResponseEntity<Void> sellAllCars() {
+        carService.sellCars();
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/sell/{vin}")
+    @Operation(summary = "Продать автомобиль по VIN")
+    public ResponseEntity<Void> sellCar(@PathVariable int vin) {
+        var carOptional = carStorage.getCars().stream()
+                .filter(c -> c.getVin() == vin)
+                .findFirst();
+
+        if (carOptional.isPresent()) {
+            var car = carOptional.get();
+            carStorage.getCars().remove(car);
+            // Логика продажи (упрощенно)
+            hseFacade.sell();
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{vin}")
+    @Operation(summary = "Обновить автомобиль")
+    public ResponseEntity<Car> updateCar(
+            @PathVariable int vin,
+            @Valid @RequestBody CarRequest request) {
+
+        return carStorage.getCars().stream()
+                .filter(car -> car.getVin() == vin)
+                .findFirst()
+                .map(existingCar -> {
+                    var updatedCar = createCarFromRequest(request, vin);
+                    carStorage.getCars().remove(existingCar);
+                    carStorage.addExistingCar(updatedCar);
+                    return ResponseEntity.ok(updatedCar);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{vin}")
+    @Operation(summary = "Удалить автомобиль")
+    public ResponseEntity<Void> deleteCar(@PathVariable int vin) {
+        boolean removed = carStorage.getCars().removeIf(car -> car.getVin() == vin);
+        return removed ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
     @GetMapping
@@ -1268,6 +1319,15 @@ public class CarController {
                 .filter(car -> engineType == null || car.getEngineType().equals(engineType))
                 .filter(car -> minVin == null || car.getVin() >= minVin)
                 .toList();
+    }
+
+    private Car createCarFromRequest(CarRequest request, int vin) {
+        Engine engine = switch (EngineTypes.valueOf(request.engineType())) {
+            case PEDAL -> new PedalEngine(request.pedalSize());
+            case HAND -> new HandEngine();
+            case LEVITATION -> new LevitationEngine();
+        };
+        return new Car(vin, engine);
     }
 }package hse.kpo.observers;
 
@@ -1503,10 +1563,28 @@ public interface Transport {
 package hse.kpo.interfaces;
 
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import hse.kpo.domains.Customer;
+import hse.kpo.domains.HandEngine;
+import hse.kpo.domains.LevitationEngine;
+import hse.kpo.domains.PedalEngine;
 import hse.kpo.enums.ProductionTypes;
+import lombok.ToString;
 
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = HandEngine.class, name = "hand"),
+        @JsonSubTypes.Type(value = PedalEngine.class, name = "pedal"),
+        @JsonSubTypes.Type(value = LevitationEngine.class, name = "levitation")
+})
 public interface Engine {
+
+    String toString();
 
     /**
      * Метод для проверки совместимости двигателя с покупателем.
