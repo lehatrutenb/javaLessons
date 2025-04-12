@@ -2,12 +2,14 @@ package hse.kpo.domains;
 
 import hse.kpo.domains.cars.Car;
 import hse.kpo.enums.ProductionTypes;
+import jakarta.persistence.Entity;
 
+//@Entity
 public class CatamaranWithWheels extends Car {
     private final Catamaran catamaran;
 
     public CatamaranWithWheels(Catamaran catamaran) {
-        super(catamaran.getVin() + 10000, catamaran.getEngine());
+        super((AbstractEngine) catamaran.getEngine());
         this.catamaran = catamaran;
     }
 

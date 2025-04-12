@@ -41,8 +41,7 @@ public class CatamaranStorage implements CatamaranProvider {
      */
     public <T> Catamaran addCatamaran(CatamaranFactory<T> catamaranFactory, T catamaranParams) {
         var catamaran = catamaranFactory.create(
-                catamaranParams,
-                ++carNumberCounter
+                catamaranParams
         );
 
         catamarans.add(catamaran);
