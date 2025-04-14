@@ -25,7 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/catamarans")
 @RequiredArgsConstructor
-@Tag(name = "Автомобили", description = "Управление водными транспортными средствами")
+@Tag(name = "Катамараны", description = "Управление водными транспортными средствами")
 public class CatamaranController {
     private final HseCatamaranService catamaranService;
     private final Hse hseFacade;
