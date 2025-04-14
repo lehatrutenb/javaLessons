@@ -4,6 +4,8 @@ import hse.kpo.domains.cars.Car;
 import hse.kpo.domains.LevitationEngine;
 import hse.kpo.interfaces.cars.CarFactory;
 import hse.kpo.params.EmptyEngineParams;
+import hse.kpo.repositories.CarRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,8 +15,8 @@ import org.springframework.stereotype.Component;
 public class LevitationCarFactory implements CarFactory<EmptyEngineParams> {
     @Override
     public Car create(EmptyEngineParams carParams) {
-        var engine = new LevitationEngine(); // Создаем двигатель без каких-либо параметров
+        var engine = new LevitationEngine();
 
-        return new Car(engine); // создаем автомобиль с левитирующим приводом
+        return new Car(engine);
     }
 }

@@ -8,12 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
- * Класс, реализующий {@link Engine} ручного типа.
+ * Класс, реализующий {@link AbstractEngine} ручного типа.
  */
 @NoArgsConstructor
+@ToString
 @Entity
 @DiscriminatorValue("LEVITATION")
-@ToString
 public class LevitationEngine extends AbstractEngine {
     @Override
     public boolean isCompatible(Customer customer, ProductionTypes type) {

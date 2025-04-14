@@ -1,4 +1,4 @@
-package hse.kpo.domains.cars;
+package hse.kpo.domains.catamarans;
 
 import hse.kpo.domains.AbstractEngine;
 import hse.kpo.domains.Customer;
@@ -16,7 +16,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,15 +23,15 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Класс хранящий информацию о машине.
+ * Класс хранящий информацию о катамаране.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "cars")
+@Table(name = "catamarans")
 @ToString
 @NoArgsConstructor
-public class Car implements Transport {
+public class Catamaran implements Transport {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "engine_id")
@@ -42,12 +41,12 @@ public class Car implements Transport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int vin;
 
-    public Car(int vin, AbstractEngine engine) {
+    public Catamaran(int vin, AbstractEngine engine) {
         this.vin = vin;
         this.engine = engine;
     }
 
-    public Car(AbstractEngine engine) {
+    public Catamaran(AbstractEngine engine) {
         this.engine = engine;
     }
 
@@ -65,11 +64,11 @@ public class Car implements Transport {
     }
 
     public boolean isCompatible(Customer customer) {
-        return this.engine.isCompatible(customer, ProductionTypes.CAR);
+        return this.engine.isCompatible(customer, ProductionTypes.CATAMARAN);
     }
 
     @Override
     public String getTransportType() {
-        return ProductionTypes.CAR.name();
+        return ProductionTypes.CATAMARAN.name();
     }
 }

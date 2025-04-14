@@ -1,23 +1,14 @@
 package hse.kpo.services.catamarans;
 
-import hse.kpo.domains.Catamaran;
 import hse.kpo.domains.Customer;
-import hse.kpo.domains.cars.Car;
-import hse.kpo.enums.ProductionTypes;
+import hse.kpo.domains.catamarans.Catamaran;
 import hse.kpo.interfaces.CustomerProvider;
-import hse.kpo.interfaces.cars.CarFactory;
 import hse.kpo.interfaces.catamarans.CatamaranFactory;
 import hse.kpo.interfaces.catamarans.CatamaranProvider;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-import hse.kpo.observers.Sales;
-import hse.kpo.observers.SalesObserver;
-import hse.kpo.repository.CarRepository;
-import hse.kpo.repository.CatamaranRepository;
+import hse.kpo.repositories.CatamaranRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -28,46 +19,33 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class HseCatamaranService implements CatamaranProvider {
-
-    private final List<SalesObserver> observers = new ArrayList<>();
-
-    private final CatamaranRepository catamaranRepository;
+public class HseCatamaranService implements CatamaranProvider{
 
     private final CustomerProvider customerProvider;
-
-    public void addObserver(SalesObserver observer) {
-        observers.add(observer);
-    }
-
-    private void notifyObserversForSale(Customer customer, ProductionTypes productType, int vin) {
-        observers.forEach(obs -> obs.onSale(customer, productType, vin));
-    }
+    private final CatamaranRepository catamaranRepository;
 
     /**
-     * Метод продажи катамаранов
+     * Метод продажи катамаранов.
      */
-    @Sales
     public void sellCatamarans() {
         var customers = customerProvider.getCustomers();
-        customers.stream().filter(customer -> Objects.isNull(customer.getCar()))
-                .forEach(customer -> {
-                    var catamaran = takeCatamaran(customer);
-                    if (Objects.nonNull(catamaran)) {
-                        customer.setCatamaran(catamaran);
-                        notifyObserversForSale(customer, ProductionTypes.CAR, catamaran.getVin());
-                    } else {
-                        log.warn("No car in CarService");
-                    }
-                });
+        customers.stream().filter(customer -> Objects.isNull(customer.getCatamaran()))
+            .forEach(customer -> {
+                var catamaran = this.takeCatamaran(customer);
+                if (Objects.nonNull(catamaran)) {
+                    customer.setCatamaran(catamaran);
+                } else {
+                    log.warn("No catamaran in CatamaranService");
+                }
+            });
     }
 
     @Override
     public Catamaran takeCatamaran(Customer customer) {
 
-        var filteredCars = catamaranRepository.findAll().stream().filter(catamaran -> catamaran.isCompatible(customer)).toList();
+        var filteredCatamarans = catamaranRepository.findAll().stream().filter(Catamaran -> Catamaran.isCompatible(customer)).toList();
 
-        var firstCatamaran = filteredCars.stream().findFirst();
+        var firstCatamaran = filteredCatamarans.stream().findFirst();
 
         firstCatamaran.ifPresent(catamaranRepository::delete);
 
@@ -77,15 +55,15 @@ public class HseCatamaranService implements CatamaranProvider {
     /**
      * Метод добавления {@link Catamaran} в систему.
      *
-     * @param catamaranFactory фабрика для создания катамаранов
-     * @param catamaranParams параметры для создания катармарана
+     * @param catamaranFactory фабрика для создания автомобилей
+     * @param catamaranParams параметры для создания автомобиля
      */
     public <T> Catamaran addCatamaran(CatamaranFactory<T> catamaranFactory, T catamaranParams) {
         return catamaranRepository.save(catamaranFactory.create(catamaranParams));
     }
 
-    public Catamaran addExistingCatamaran(Catamaran catamaran) {
-        return catamaranRepository.save(catamaran);
+    public Catamaran addExistingCatamaran(Catamaran Catamaran) {
+        return catamaranRepository.save(Catamaran);
     }
 
     public Optional<Catamaran> findByVin(Integer vin) {
@@ -96,7 +74,7 @@ public class HseCatamaranService implements CatamaranProvider {
         catamaranRepository.deleteById(vin);
     }
 
-    public List<Catamaran> getCarsWithFiltration(String engineType, Integer vin) {
+    public List<Catamaran> getCatamaransWithFiltration(String engineType, Integer vin) {
         return catamaranRepository.findCatamaransByEngineTypeAndVinGreaterThan(engineType, vin);
     }
 

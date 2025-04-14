@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-import hse.kpo.repository.CarRepository;
+import hse.kpo.repositories.CarRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -25,14 +24,12 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class HseCarService implements CarProvider {
+public class HseCarService implements CarProvider{
 
     private final List<SalesObserver> observers = new ArrayList<>();
 
-    // private final CarProvider carProvider;
-    private final CarRepository carRepository;
-
     private final CustomerProvider customerProvider;
+    private final CarRepository carRepository;
 
     public void addObserver(SalesObserver observer) {
         observers.add(observer);
@@ -50,7 +47,7 @@ public class HseCarService implements CarProvider {
         var customers = customerProvider.getCustomers();
         customers.stream().filter(customer -> Objects.isNull(customer.getCar()))
                 .forEach(customer -> {
-                    var car = takeCar(customer);
+                    var car = this.takeCar(customer);
                     if (Objects.nonNull(car)) {
                         customer.setCar(car);
                         notifyObserversForSale(customer, ProductionTypes.CAR, car.getVin());

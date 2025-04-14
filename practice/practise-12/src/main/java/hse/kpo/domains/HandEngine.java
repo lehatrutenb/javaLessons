@@ -11,9 +11,9 @@ import lombok.ToString;
  * Класс, реализующий {@link Engine} ручного типа.
  */
 @NoArgsConstructor
+@ToString
 @Entity
 @DiscriminatorValue("HAND")
-@ToString
 public class HandEngine extends AbstractEngine {
     @Override
     public boolean isCompatible(Customer customer, ProductionTypes type) {

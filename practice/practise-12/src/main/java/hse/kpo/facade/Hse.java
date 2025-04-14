@@ -1,6 +1,6 @@
 package hse.kpo.facade;
 
-import hse.kpo.domains.Catamaran;
+import hse.kpo.domains.catamarans.Catamaran;
 import hse.kpo.domains.CatamaranWithWheels;
 import hse.kpo.domains.Customer;
 import hse.kpo.domains.Report;
@@ -15,12 +15,8 @@ import hse.kpo.interfaces.Transport;
 import hse.kpo.params.EmptyEngineParams;
 import hse.kpo.params.PedalEngineParams;
 import hse.kpo.export.reports.ReportExporter;
-import hse.kpo.repository.CarRepository;
-import hse.kpo.repository.CatamaranRepository;
 import hse.kpo.services.cars.HseCarService;
 import hse.kpo.services.catamarans.HseCatamaranService;
-import hse.kpo.storages.CarStorage;
-import hse.kpo.storages.CatamaranStorage;
 import hse.kpo.storages.CustomerStorage;
 import hse.kpo.observers.SalesObserver;
 import jakarta.annotation.PostConstruct;
@@ -41,8 +37,6 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class Hse {
     private final CustomerStorage customerStorage;
-    private final CarRepository carRepository;
-    private final CatamaranRepository catamaranRepository;
     private final HseCarService carService;
     private final HseCatamaranService catamaranService;
     private final SalesObserver salesObserver;
@@ -94,7 +88,7 @@ public class Hse {
      * @param pedalSize размер педалей (1-15)
      */
     public Car addPedalCar(int pedalSize) {
-        return carService.addCar(pedalCarFactory,  new PedalEngineParams(pedalSize));
+        return carService.addCar(pedalCarFactory, new PedalEngineParams(pedalSize));
     }
 
     /**
@@ -111,8 +105,8 @@ public class Hse {
         return carService.addCar(levitationCarFactory, EmptyEngineParams.DEFAULT);
     }
 
-    public Car addWheelCatamaran() {
-        return carService.addExistingCar(new CatamaranWithWheels(createCatamaran()));
+    public void addWheelCatamaran() {
+        carService.addExistingCar(new CatamaranWithWheels(createCatamaran()));
     }
 
     private Catamaran createCatamaran() {

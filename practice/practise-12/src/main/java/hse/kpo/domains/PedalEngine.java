@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
- * Класс, реализующий {@link Engine} педального типа.
+ * Класс, реализующий {@link AbstractEngine} педального типа.
  */
-@NoArgsConstructor
 @ToString
+@Getter
 @Entity
 @DiscriminatorValue("PEDAL")
-@Getter
+@NoArgsConstructor
 public class PedalEngine extends AbstractEngine {
     private int size;
 
