@@ -7,6 +7,7 @@ import hse.kpo.facade.Hse;
 import hse.kpo.factories.cars.HandCarFactory;
 import hse.kpo.factories.cars.PedalCarFactory;
 import hse.kpo.observers.SalesObserver;
+import hse.kpo.services.CustomerService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -22,12 +23,12 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 @SpringBootTest
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 class HseTest {
-/*
+
     @Autowired
     private Hse hse;
 
     @Autowired
-    private CustomerStorage customerStorage;
+    private CustomerService customerService;
 
     @Autowired
     private PedalCarFactory pedalCarFactory;
@@ -49,8 +50,8 @@ class HseTest {
         hse.sell();
 
         // Assert
-        Customer customer = customerStorage.getCustomers().get(0);
-        Car receivedCar = customer.getCar();
+        Customer customer = customerService.getCustomers().get(0);
+        Car receivedCar = customer.getCars().getFirst();
 
         assertAll(
                 () -> assertNotNull(receivedCar, "Автомобиль не был назначен")
@@ -68,10 +69,10 @@ class HseTest {
         hse.sell();
 
         // Assert
-        Customer customer = customerStorage.getCustomers().get(0);
+        Customer customer = customerService.getCustomers().get(0);
 
         assertAll(
-                () -> assertNull(customer.getCar(),
+                () -> assertNull(customer.getCars(),
                         "Клиент не должен был получить автомобиль. Проверьте совместимость двигателя")
         );
     }
@@ -89,14 +90,14 @@ class HseTest {
         hse.sell();
 
         // Assert
-        List<Customer> customers = customerStorage.getCustomers();
+        List<Customer> customers = customerService.getCustomers();
         assertAll(
-                () -> assertNotNull(customers.get(0).getCar(),
+                () -> assertNotNull(customers.get(0).getCars().getFirst(),
                         "Первый клиент должен получить автомобиль"),
-                () -> assertNotNull(customers.get(1).getCar(),
+                () -> assertNotNull(customers.get(1).getCars().getFirst(),
                         "Второй клиент должен получить автомобиль"),
-                () -> assertNotEquals(customers.get(0).getCar().getVin(),
-                        customers.get(1).getCar().getVin(),
+                () -> assertNotEquals(customers.get(0).getCars().getFirst().getVin(),
+                        customers.get(1).getCars().getFirst().getVin(),
                         "VIN автомобилей должны отличаться")
         );
     }
@@ -123,5 +124,4 @@ class HseTest {
                 () -> assertTrue(report.matches("(?s).*VIN-\\d+.*"),
                         "Отчет должен содержать VIN автомобиля в формате 'VIN-число'"));
     }
- */
 }

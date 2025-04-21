@@ -1,6 +1,7 @@
 package hse.kpo.interfaces;
 
 import hse.kpo.domains.Customer;
+import hse.kpo.dto.request.CustomerRequest;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface CustomerProvider {
 
     void addCustomer(Customer customer);
 
-    boolean updateCustomer(Customer updatedCustomer);
+    Customer updateCustomer(CustomerRequest request);
 
     boolean deleteCustomer(String name);
 }

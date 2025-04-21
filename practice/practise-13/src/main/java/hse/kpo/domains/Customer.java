@@ -1,9 +1,5 @@
 package hse.kpo.domains;
 
-import hse.kpo.domains.cars.Car;
-import hse.kpo.domains.catamarans.Catamaran;
-import jakarta.persistence.*;
-import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +8,6 @@ import java.util.List;
  */
 @Getter
 @Setter
-@ToString
 @Entity
 @Table(name = "customers")
 @NoArgsConstructor
@@ -48,32 +43,16 @@ public class Customer {
         this.iq = iq;
     }
 
-    public static Customer builder() {
-        return new Customer();
+    @Override
+    public String toString() {
+        return "Customer{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", legPower=" + legPower +
+            ", handPower=" + handPower +
+            ", iq=" + iq +
+            ", cars=" + cars.stream().map(Car::getVin).toList().toString() +
+            ", catamaran=" + catamaran +
+            '}';
     }
-
-    public Customer build() {
-        return this;
-    }
-
-    public Customer name(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public Customer iq(int iq) {
-        this.iq = iq;
-        return this;
-    }
-    
-   public Customer legPower(int legPower) {
-       this.legPower = legPower;
-       return this;
-   }
-
-    public Customer handPower(int handPower) {
-        this.handPower = handPower;
-        return this;
-    }
-
 }

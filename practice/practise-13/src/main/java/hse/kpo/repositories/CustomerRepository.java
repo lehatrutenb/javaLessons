@@ -1,5 +1,6 @@
 package hse.kpo.repositories;
 
+import java.util.Optional;
 import hse.kpo.domains.Customer;
 import hse.kpo.domains.catamarans.Catamaran;
 import jakarta.transaction.Transactional;
@@ -19,4 +20,5 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
         WHERE c.name = :name
     """)
     void deleteByName(@Param("name") String name);
+    Optional<Customer> findByName(String name);
 }

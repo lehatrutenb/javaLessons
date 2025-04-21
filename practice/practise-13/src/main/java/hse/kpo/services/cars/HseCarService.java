@@ -16,12 +16,14 @@ import java.util.Optional;
 import hse.kpo.repositories.CarRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Component;
 
 /**
  * Сервис продажи машин.
  */
-@Component
+@Service
 @RequiredArgsConstructor
 @Slf4j
 public class HseCarService implements CarProvider{
@@ -65,8 +67,6 @@ public class HseCarService implements CarProvider{
         var filteredCars = carRepository.findAll().stream().filter(car -> car.isCompatible(customer)).toList();
 
         var firstCar = filteredCars.stream().findFirst();
-
-        firstCar.ifPresent(carRepository::delete);
 
         return firstCar.orElse(null);
     }

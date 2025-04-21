@@ -5,6 +5,7 @@ import hse.kpo.domains.CatamaranWithWheels;
 import hse.kpo.domains.Customer;
 import hse.kpo.domains.Report;
 import hse.kpo.domains.cars.Car;
+import hse.kpo.dto.request.CustomerRequest;
 import hse.kpo.enums.ReportFormat;
 import hse.kpo.export.transport.TransportExporter;
 import hse.kpo.factories.ReportExporterFactory;
@@ -22,6 +23,7 @@ import hse.kpo.observers.SalesObserver;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Writer;
 import java.util.List;
@@ -65,17 +67,12 @@ public class Hse {
      * hse.addCustomer("Анна", 7, 5, 120);
      */
     public void addCustomer(String name, int legPower, int handPower, int iq) {
-        Customer customer = Customer.builder()
-                .name(name)
-                .legPower(legPower)
-                .handPower(handPower)
-                .iq(iq)
-                .build();
+        Customer customer = new Customer(name, legPower, handPower, iq);
         customerService.addCustomer(customer);
     }
 
-    public boolean updateCustomer(Customer updatedCustomer) {
-        return customerService.updateCustomer(updatedCustomer);
+    public Customer updateCustomer(CustomerRequest request) {
+        return customerService.updateCustomer(request);
     }
 
     public boolean deleteCustomer(String name) {

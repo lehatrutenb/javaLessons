@@ -1,6 +1,7 @@
 package hse.kpo.controllers.customers;
 
 import hse.kpo.domains.Customer;
+import hse.kpo.domains.cars.Car;
 import hse.kpo.dto.request.CustomerRequest;
 import hse.kpo.dto.response.CustomerResponse;
 import hse.kpo.facade.Hse;
@@ -41,13 +42,7 @@ public class CustomerController {
     public ResponseEntity<CustomerResponse> updateCustomer(
             @PathVariable String name,
             @Valid @RequestBody CustomerRequest request) {
-        Customer updatedCustomer = Customer.builder()
-                .name(name)
-                .legPower(request.getLegPower())
-                .handPower(request.getHandPower())
-                .iq(request.getIq())
-                .build();
-        hseFacade.updateCustomer(updatedCustomer);
+        var updatedCustomer = hseFacade.updateCustomer(request);
         return ResponseEntity.ok(convertToResponse(updatedCustomer));
     }
 
@@ -79,7 +74,7 @@ public class CustomerController {
                 customer.getLegPower(),
                 customer.getHandPower(),
                 customer.getIq(),
-                customer.getCars() != null ? customer.getCars().stream().map(car -> car.getVin()).toList() : null, // ??? first
+                customer.getCars() != null ? customer.getCars().stream().map(Car::getVin).toList() : null,
                 customer.getCatamaran() != null ? customer.getCatamaran().getVin() : null
         );
     }
