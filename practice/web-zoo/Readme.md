@@ -1,0 +1,1 @@
+Добавил subdomains - ecnlosure, feeding, healing в domain Animals

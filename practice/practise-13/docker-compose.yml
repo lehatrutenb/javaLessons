@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - postgres_data_non_auto:/var/lib/postgresql/data
+      - postgres_data_non_auto2:/var/lib/postgresql/data
     ports:
       - "5499:5432"
     healthcheck:
@@ -26,9 +26,10 @@ services:
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
     ports:
       - "8085:8080"
+      - "9090:9090"
     depends_on:
       postgres:
         condition: service_healthy
 
 volumes:
-  postgres_data_non_auto:
+  postgres_data_non_auto2:
