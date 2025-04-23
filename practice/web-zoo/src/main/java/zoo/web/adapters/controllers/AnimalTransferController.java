@@ -9,9 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import zoo.web.core.application_services.Facade;
 import zoo.web.core.application_services.dtos.request.AnimalRequest;
 import zoo.web.core.application_services.dtos.response.AnimalResponse;
+import zoo.web.ishared.IapplicationFacade;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Животные", description = "Управление животными")
 public class AnimalTransferController {
-    private final Facade facade;
+    private final IapplicationFacade facade;
 
     @PostMapping("/{enclosureId}")
     @Operation(summary = "Создать животное")

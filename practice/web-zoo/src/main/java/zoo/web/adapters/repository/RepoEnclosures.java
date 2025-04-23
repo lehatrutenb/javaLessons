@@ -3,7 +3,6 @@ package zoo.web.adapters.repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import zoo.web.core.application_services.Facade;
 import zoo.web.core.entities.animals.Animal;
 import zoo.web.core.entities.enclosure.Enclosure;
 import zoo.web.ishared.IrepoEnclosures;

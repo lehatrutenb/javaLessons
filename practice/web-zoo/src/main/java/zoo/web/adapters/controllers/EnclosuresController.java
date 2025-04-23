@@ -9,13 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import zoo.web.core.application_services.Facade;
 import zoo.web.core.application_services.dtos.request.AnimalRequest;
 import zoo.web.core.application_services.dtos.request.EnclosureRequest;
 import zoo.web.core.application_services.dtos.request.FeedingTimeRequest;
 import zoo.web.core.application_services.dtos.response.AnimalResponse;
 import zoo.web.core.application_services.dtos.response.EnclosureResponse;
 import zoo.web.core.application_services.dtos.response.FeedingTimeResponse;
+import zoo.web.ishared.IapplicationFacade;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Вольеры", description = "Управление вольерами")
 public class EnclosuresController {
-    private final Facade facade;
+    private final IapplicationFacade facade;
 
     @PostMapping
     @Operation(summary = "создать вольер")

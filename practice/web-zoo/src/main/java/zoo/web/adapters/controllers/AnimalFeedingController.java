@@ -9,11 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import zoo.web.core.application_services.Facade;
 import zoo.web.core.application_services.dtos.request.AnimalRequest;
 import zoo.web.core.application_services.dtos.request.FeedingTimeRequest;
 import zoo.web.core.application_services.dtos.response.AnimalResponse;
 import zoo.web.core.application_services.dtos.response.FeedingTimeResponse;
+import zoo.web.ishared.IapplicationFacade;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Кормление животных", description = "Кормление животных")
 public class AnimalFeedingController {
-    private final Facade facade;
+    private final IapplicationFacade facade;
 
     @PostMapping
     @Operation(summary = "создать кормление по расписанию")

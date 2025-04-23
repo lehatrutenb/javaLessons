@@ -2,9 +2,11 @@ package zoo.web.core.domain_services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import zoo.web.core.entities.events.AnimalMovedEvent;
 import zoo.web.core.entities.events.FeedingTimeEvent;
 import zoo.web.core.entities.feeding.FeedingSchedule;
+import zoo.web.ishared.IanimalFeedService;
 import zoo.web.ishared.IanimalFeedSubscriber;
 import zoo.web.ishared.IfeedingTimeEventFactory;
 
@@ -13,9 +15,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Service
 @RequiredArgsConstructor
-public class AnimalFeedService {
+public class AnimalFeedService implements IanimalFeedService {
     private final IfeedingTimeEventFactory feedingTimeEventFactory;
     private List<IanimalFeedSubscriber> subscribers =new ArrayList<>();
     public void subscribe(IanimalFeedSubscriber animalFeedSubscriber) {

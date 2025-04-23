@@ -1,8 +1,10 @@
 package zoo.web.core.application_services;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import zoo.web.core.application_services.dtos.request.AnimalRequest;
 import zoo.web.core.application_services.dtos.request.EnclosureRequest;
@@ -16,21 +18,20 @@ import zoo.web.core.application_services.mappings.request.FeedingTimeRequestMapp
 import zoo.web.core.application_services.mappings.response.AnimalResponseMapper;
 import zoo.web.core.application_services.mappings.response.EnclosureResponseMapper;
 import zoo.web.core.application_services.mappings.response.FeedingTimeResponseMapper;
+import zoo.web.core.domain_services.AnimalMoveService;
 import zoo.web.core.domain_services.factories.AnimalFactory;
 import zoo.web.core.domain_services.factories.FeedingScheduleFactory;
 import zoo.web.core.entities.AllAnimalInfo;
 import zoo.web.core.entities.enclosure.Enclosure;
 import zoo.web.core.entities.feeding.FeedingSchedule;
-import zoo.web.ishared.IanimalFactory;
-import zoo.web.ishared.IfeedingScheduleFactory;
+import zoo.web.ishared.*;
 
 import java.util.List;
 import java.util.Optional;
 
-// use dtos + mappings
 @Component
 @RequiredArgsConstructor
-public class Facade {
+public class Facade implements IapplicationFacade {
     private final IfeedingScheduleFactory feedingScheduleFactory;
     private final IanimalFactory animalFactory;
     private final AnimalTransferService animalTransferService;
@@ -45,6 +46,15 @@ public class Facade {
     private final AnimalResponseMapper animalResponseMapper;
     private final EnclosureResponseMapper enclosureResponseMapper;
     private final FeedingTimeResponseMapper feedingTimeResponseMapper;
+
+    private final IanimalMoveService animalMoveService;
+    private final IanimalFeedService animalFeedService;
+
+    @PostConstruct
+    private void init() {
+        animalMoveService.subscribe(zooStatisticsService);
+        animalFeedService.subscribe(zooStatisticsService);
+    }
 
     public List<AnimalResponse> getAnimals() {
         return animalTransferService.getAllAnimalsInfo().stream().map(

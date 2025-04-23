@@ -3,20 +3,22 @@ package zoo.web.core.domain_services;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import zoo.web.core.entities.animals.Animal;
 import zoo.web.core.entities.enclosure.Enclosure;
 import zoo.web.core.entities.events.AnimalMovedEvent;
 import zoo.web.core.entities.feeding.AnimalFeeding;
 import zoo.web.ishared.IanimalFeedSubscriber;
+import zoo.web.ishared.IanimalMoveService;
 import zoo.web.ishared.IanimalMoveSubscriber;
 import zoo.web.ishared.IanimalMovedEventFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Service
 @RequiredArgsConstructor
-public class AnimalMoveService {
+public class AnimalMoveService implements IanimalMoveService {
     private final IanimalMovedEventFactory animalMovedEventFactory;
     private List<IanimalMoveSubscriber> subscribers = new ArrayList<>();
     public void subscribe(IanimalMoveSubscriber animalMoveSubscriber) {

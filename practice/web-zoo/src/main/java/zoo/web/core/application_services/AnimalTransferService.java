@@ -3,25 +3,26 @@ package zoo.web.core.application_services;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import zoo.web.core.domain_services.AnimalMoveService;
+import org.springframework.stereotype.Service;
 import zoo.web.core.entities.events.AnimalMovedEvent;
 import zoo.web.core.entities.AllAnimalInfo;
 import zoo.web.core.entities.animals.Animal;
 import zoo.web.core.entities.enclosure.Enclosure;
 import zoo.web.core.entities.feeding.AnimalFeeding;
 import zoo.web.core.entities.healing.AnimalHealing;
+import zoo.web.ishared.IanimalMoveService;
 import zoo.web.ishared.IrepoAnimalsAll;
 import zoo.web.ishared.IrepoEnclosures;
 
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class AnimalTransferService {
     private final IrepoAnimalsAll repoAnimals;
     private final IrepoEnclosures repoEnclosures;
-    private final AnimalMoveService animalMoveService;
+    private final IanimalMoveService animalMoveService;
 
     public List<AllAnimalInfo> getAllAnimalsInfo() {
         return repoAnimals.getAllAnimalsInfo();

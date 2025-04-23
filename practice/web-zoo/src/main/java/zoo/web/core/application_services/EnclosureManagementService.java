@@ -3,6 +3,7 @@ package zoo.web.core.application_services;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import zoo.web.core.entities.events.AnimalMovedEvent;
 import zoo.web.core.entities.AllAnimalInfo;
 import zoo.web.core.entities.animals.Animal;
@@ -16,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class EnclosureManagementService {
     private final IrepoEnclosures repoEnclosures;
