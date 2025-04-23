@@ -4,13 +4,14 @@ import org.springframework.stereotype.Component;
 import zoo.web.core.entities.animals.Animal;
 import zoo.web.ishared.IrepoAnimals;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Component
 public class RepoAnimals implements IrepoAnimals {
-    List<Animal> animals = List.of();
+    List<Animal> animals = new ArrayList<>();
 
     @Override
     public void addAnimal(Animal animal) {
@@ -19,11 +20,16 @@ public class RepoAnimals implements IrepoAnimals {
 
     @Override
     public Optional<Animal> getAnimalById(UUID id) {
-        return animals.stream().filter(animal -> animal.getId() == id).findAny();
+        return animals.stream().filter(animal -> animal.getId().equals(id)).findAny();
     }
 
     @Override
     public void deleteAnimal(Animal animal) {
         animals.remove(animal);
+    }
+
+    @Override
+    public List<Animal> getAnimals() {
+        return animals;
     }
 }

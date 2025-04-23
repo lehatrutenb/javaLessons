@@ -10,6 +10,8 @@ import zoo.web.core.entities.feeding.FeedingSchedule;
 import zoo.web.ishared.IrepoFeedingSchedules;
 import zoo.web.ishared.ItimeGetter;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class FeedingOrganizationService {
@@ -26,6 +28,10 @@ public class FeedingOrganizationService {
         repoFeedingSchedules.getAllFeedingSchedules().forEach(
                 feedingSchedule -> animalFeedService.feed(feedingSchedule, timeGetter.now())
                 );
+    }
+
+    public List<FeedingSchedule> getAllFeedingSchedules() {
+        return repoFeedingSchedules.getAllFeedingSchedules();
     }
 
     public void deleteFeedingSchedule(FeedingSchedule feedingSchedule) {

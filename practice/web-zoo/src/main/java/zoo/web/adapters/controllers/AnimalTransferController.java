@@ -13,6 +13,8 @@ import zoo.web.core.application_services.Facade;
 import zoo.web.core.application_services.dtos.request.AnimalRequest;
 import zoo.web.core.application_services.dtos.response.AnimalResponse;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/animals")
 @RequiredArgsConstructor
@@ -21,7 +23,7 @@ public class AnimalTransferController {
     private final Facade facade;
 
     @PostMapping("/{enclosureId}")
-    @Operation(summary = "Создать животного")
+    @Operation(summary = "Создать животное")
     public ResponseEntity<AnimalResponse> createAnimal(
             @Valid @RequestBody AnimalRequest request,
             @PathVariable String enclosureId,
@@ -33,6 +35,26 @@ public class AnimalTransferController {
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(facade.addAnimal(request, enclosureId));
+    }
+
+    @PostMapping
+    @Operation(summary = "Создать животное - положить куда получится")
+    public ResponseEntity<AnimalResponse> createAnimal(
+            @Valid @RequestBody AnimalRequest request,
+            BindingResult bindingResult) throws Throwable {
+
+        if (bindingResult.hasErrors()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    bindingResult.getAllErrors().getFirst().getDefaultMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(facade.addAnimalToAny(request));
+    }
+
+    @GetMapping
+    @Operation(summary = "Получить всех животных")
+    public ResponseEntity<List<AnimalResponse>> createAnimal() throws Throwable {
+        return ResponseEntity.status(HttpStatus.OK).body(facade.getAnimals());
     }
 
     @DeleteMapping("/{id}")

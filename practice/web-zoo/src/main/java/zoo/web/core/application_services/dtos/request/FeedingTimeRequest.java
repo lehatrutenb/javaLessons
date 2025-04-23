@@ -12,7 +12,6 @@ public record FeedingTimeRequest(
         String firstFeedTime,
 
         @Schema(description="Период между кормлениями (часы)", example="6")
-        @Pattern(regexp="^(([1-9])|(1[0-9])|(2[0-9]))$")
         int periodH,
 
         @Schema(description="еда для кормления", example="bone")

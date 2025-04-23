@@ -1,7 +1,7 @@
 package zoo.web.ishared;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public interface ItimeGetter {
-    public LocalDate now();
+    public LocalDateTime now();
 }

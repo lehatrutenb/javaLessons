@@ -1,6 +1,8 @@
 package zoo.web.core.application_services;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import zoo.web.core.application_services.dtos.request.AnimalRequest;
 import zoo.web.core.application_services.dtos.request.EnclosureRequest;
@@ -22,6 +24,9 @@ import zoo.web.core.entities.feeding.FeedingSchedule;
 import zoo.web.ishared.IanimalFactory;
 import zoo.web.ishared.IfeedingScheduleFactory;
 
+import java.util.List;
+import java.util.Optional;
+
 // use dtos + mappings
 @Component
 @RequiredArgsConstructor
@@ -41,6 +46,20 @@ public class Facade {
     private final EnclosureResponseMapper enclosureResponseMapper;
     private final FeedingTimeResponseMapper feedingTimeResponseMapper;
 
+    public List<AnimalResponse> getAnimals() {
+        return animalTransferService.getAllAnimalsInfo().stream().map(
+                animal -> animalResponseMapper.getAnimalResponse(
+                        animal,
+                        enclosureManagementService.getEnclosureByAnimal(animal.animal()).orElseThrow())
+        ).toList();
+    }
+
+    public List<EnclosureResponse> getEnclosures() {
+        return enclosureManagementService.getEnclosures().stream().map(
+                enclosureResponseMapper::getEnclosureResponse
+                ).toList();
+    }
+
     public AnimalResponse addAnimal(AnimalRequest animalRequest, String enclosureId) throws Throwable {
         AllAnimalInfo animal = animalRequestMapper.getAllAnimalInfo(animalRequest);
         Enclosure enclosure = enclosureRequestMapper.getEnclosure(enclosureId);
@@ -48,8 +67,10 @@ public class Facade {
         return animalResponseMapper.getAnimalResponse(animal, enclosure);
     }
 
-    public void addAnimalToAny(AnimalRequest animalRequest) throws Throwable {
-        animalTransferService.addAnimalToAny(animalRequestMapper.getAllAnimalInfo(animalRequest));
+    public AnimalResponse addAnimalToAny(AnimalRequest animalRequest) throws Throwable {
+        AllAnimalInfo animalInfo = animalRequestMapper.getAllAnimalInfo(animalRequest);
+        Optional<Enclosure> enclosure = animalTransferService.addAnimalToAny(animalInfo);
+        return animalResponseMapper.getAnimalResponse(animalInfo, enclosure.orElseThrow());
     }
 
     public void moveAnimal(String animalId, String enclosureToId) throws Throwable {
@@ -68,7 +89,7 @@ public class Facade {
         enclosureManagementService.addEnclosure(
             enclosure
         );
-        return enclosureResponseMapper.getAnimalResponse(enclosure);
+        return enclosureResponseMapper.getEnclosureResponse(enclosure);
     }
 
     public void deleteEnclosure(String enclosureId) {
@@ -89,5 +110,15 @@ public class Facade {
         feedingOrganizationService.deleteFeedingSchedule(
                 feedingTimeRequestMapper.getFeedingSchedule(feedingScheduleId)
         );
+    }
+
+    public List<FeedingTimeResponse> getFeedingSchedules() {
+        return feedingOrganizationService.getAllFeedingSchedules().stream().map(
+                feedingTimeResponseMapper::getFeedingTimeResponse
+        ).toList();
+    }
+
+    public void runFeeding() {
+        feedingOrganizationService.scheduleFeeding();
     }
 }

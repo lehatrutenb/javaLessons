@@ -4,13 +4,14 @@ import org.springframework.stereotype.Component;
 import zoo.web.core.entities.healing.AnimalHealing;
 import zoo.web.ishared.IrepoAnimalsHealing;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Component
 public class RepoAnimalsHealing implements IrepoAnimalsHealing {
-    List<AnimalHealing> animals = List.of();
+    List<AnimalHealing> animals = new ArrayList<>();
 
     @Override
     public void addAnimalHealing(AnimalHealing animalHealing) {
@@ -19,7 +20,7 @@ public class RepoAnimalsHealing implements IrepoAnimalsHealing {
 
     @Override
     public Optional<AnimalHealing> getAnimalHealingById(UUID id) {
-        return animals.stream().filter(animal -> animal.getId() == id).findAny();
+        return animals.stream().filter(animal -> animal.getId().equals(id)).findAny();
     }
 
     @Override

@@ -7,10 +7,11 @@ import zoo.web.core.entities.feeding.Food;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public interface IfeedingScheduleFactory {
     public FeedingSchedule create(AnimalFeeding animal,
-                                  @NonNull LocalDate nextFeedTime,
+                                  @NonNull LocalDateTime nextFeedTime,
                                   @NonNull Duration feedTimePeriod,
                                   Food food);
 }

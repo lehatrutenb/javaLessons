@@ -9,13 +9,15 @@ import zoo.web.ishared.IanimalFeedSubscriber;
 import zoo.web.ishared.IfeedingTimeEventFactory;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class AnimalFeedService {
     private final IfeedingTimeEventFactory feedingTimeEventFactory;
-    private List<IanimalFeedSubscriber> subscribers = List.of();
+    private List<IanimalFeedSubscriber> subscribers =new ArrayList<>();
     public void subscribe(IanimalFeedSubscriber animalFeedSubscriber) {
         subscribers.add(animalFeedSubscriber);
     }
@@ -24,7 +26,7 @@ public class AnimalFeedService {
         subscribers.forEach(subscriber -> subscriber.run(feedingTimeEvent));
     }
 
-    public boolean feed(FeedingSchedule feedingSchedule, LocalDate curDate) {
+    public boolean feed(FeedingSchedule feedingSchedule, LocalDateTime curDate) {
         if (curDate.isBefore(feedingSchedule.getNextFeedTime())) {
             return false;
             // throw new IllegalArgumentException("tried to feed before need time"); it was an idea but no really reason to throw ex

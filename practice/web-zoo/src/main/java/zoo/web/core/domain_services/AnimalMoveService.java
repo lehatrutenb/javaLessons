@@ -11,13 +11,14 @@ import zoo.web.ishared.IanimalFeedSubscriber;
 import zoo.web.ishared.IanimalMoveSubscriber;
 import zoo.web.ishared.IanimalMovedEventFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class AnimalMoveService {
     private final IanimalMovedEventFactory animalMovedEventFactory;
-    private List<IanimalMoveSubscriber> subscribers = List.of();
+    private List<IanimalMoveSubscriber> subscribers = new ArrayList<>();
     public void subscribe(IanimalMoveSubscriber animalMoveSubscriber) {
         subscribers.add(animalMoveSubscriber);
     }
@@ -27,10 +28,10 @@ public class AnimalMoveService {
     }
 
     public boolean checkCanMove(AnimalFeeding animalFeeding, Enclosure to) {
-        return animalFeeding.getAnimalEatType() != to.getAnimalEatType();
+        return animalFeeding.getAnimalEatType().equals(to.getAnimalEatType());
     }
     public void move(Animal animal, AnimalFeeding animalFeeding, @Nullable Enclosure from, Enclosure to) throws IllegalArgumentException {
-        if (animal.getId() != animalFeeding.getId()) {
+        if (!animal.getId().equals(animalFeeding.getId())) {
             throw new IllegalArgumentException("expected same animal");
         }
         if (!checkCanMove(animalFeeding, to)) {

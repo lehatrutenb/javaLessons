@@ -12,6 +12,7 @@ import zoo.web.ishared.*;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
@@ -26,7 +27,7 @@ public class FeedingTimeRequestMapper {
     public FeedingSchedule getFeeding(FeedingTimeRequest feedingTimeRequest) {
         return feedingScheduleFactory.create(
                 repoAnimalsFeeding.getAnimalFeedingById(UUID.fromString(feedingTimeRequest.animalId())).orElseThrow(),
-                LocalDate.parse(feedingTimeRequest.firstFeedTime(), DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")),
+                LocalDateTime.parse(feedingTimeRequest.firstFeedTime(), DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")),
                 Duration.ofHours(feedingTimeRequest.periodH()),
                 foodFactory.create(feedingTimeRequest.food())
         );

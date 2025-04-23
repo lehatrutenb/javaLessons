@@ -15,6 +15,8 @@ import zoo.web.core.application_services.dtos.request.FeedingTimeRequest;
 import zoo.web.core.application_services.dtos.response.AnimalResponse;
 import zoo.web.core.application_services.dtos.response.FeedingTimeResponse;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/animals/feed")
 @RequiredArgsConstructor
@@ -40,6 +42,19 @@ public class AnimalFeedingController {
     @Operation(summary = "Удалить кормление по расписанию")
     public ResponseEntity<Void> deleteFeedingTime(@PathVariable String id) {
         facade.deleteFeedingSchedule(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    @Operation(summary = "получить все кормления по расписанию")
+    public ResponseEntity<List<FeedingTimeResponse>> getFeedingTimes() {
+        return ResponseEntity.status(HttpStatus.OK).body(facade.getFeedingSchedules());
+    }
+
+    @PostMapping("/run")
+    @Operation(summary = "запустить кормление")
+    public ResponseEntity<Void> runFeeding() {
+        facade.runFeeding();
         return ResponseEntity.ok().build();
     }
 }

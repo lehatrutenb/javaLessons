@@ -13,6 +13,7 @@ import zoo.web.core.entities.healing.AnimalHealing;
 import zoo.web.ishared.IrepoAnimalsAll;
 import zoo.web.ishared.IrepoEnclosures;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -22,6 +23,10 @@ public class AnimalTransferService {
     private final IrepoEnclosures repoEnclosures;
     private final AnimalMoveService animalMoveService;
 
+    public List<AllAnimalInfo> getAllAnimalsInfo() {
+        return repoAnimals.getAllAnimalsInfo();
+    }
+
     public void addAnimal(AllAnimalInfo allAnimalInfo, Enclosure to) throws Throwable {
         repoAnimals.addAnimal(allAnimalInfo.animal());
         repoAnimals.addAnimalFeeding(allAnimalInfo.animalFeeding());
@@ -30,12 +35,12 @@ public class AnimalTransferService {
         animalMoveService.move(allAnimalInfo.animal(), allAnimalInfo.animalFeeding(), null, to);
     }
 
-    public boolean addAnimalToAny(AllAnimalInfo allAnimalInfo) throws Throwable {
+    public Optional<Enclosure> addAnimalToAny(AllAnimalInfo allAnimalInfo) throws Throwable {
         Optional<Enclosure> enclosure = repoEnclosures.getAllEnclosures().stream().filter(
                 curEnclosure -> animalMoveService.checkCanMove(allAnimalInfo.animalFeeding(), curEnclosure)
         ).findFirst();
         if (enclosure.isEmpty()) {
-            return false;
+            return enclosure;
         }
 
         repoAnimals.addAnimal(allAnimalInfo.animal());
@@ -43,7 +48,7 @@ public class AnimalTransferService {
         repoAnimals.addAnimalHealing(allAnimalInfo.animalHealing());
 
         animalMoveService.move(allAnimalInfo.animal(), allAnimalInfo.animalFeeding(), null, enclosure.get());
-        return true;
+        return enclosure;
     }
 
     public void moveAnimal(Animal animal, Enclosure to) throws Throwable {

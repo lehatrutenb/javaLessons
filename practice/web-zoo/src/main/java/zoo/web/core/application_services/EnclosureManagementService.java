@@ -10,7 +10,10 @@ import zoo.web.core.entities.enclosure.Enclosure;
 import zoo.web.core.entities.feeding.AnimalFeeding;
 import zoo.web.ishared.IrepoAnimalsAll;
 import zoo.web.ishared.IrepoEnclosures;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -28,6 +31,14 @@ public class EnclosureManagementService {
         }
 
         repoEnclosures.deleteEnclosure(enclosure);
+    }
+
+    public Optional<Enclosure> getEnclosureByAnimal(Animal animal) {
+        return repoEnclosures.getAllEnclosures().stream().filter(enclosure -> enclosure.hasAnimal(animal)).findAny();
+    }
+
+    public List<Enclosure> getEnclosures() {
+        return repoEnclosures.getAllEnclosures();
     }
 
     public void deleteAnimalFromEnclosures(Animal animal) {

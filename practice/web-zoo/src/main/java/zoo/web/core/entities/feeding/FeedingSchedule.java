@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -17,7 +18,7 @@ public class FeedingSchedule {
     @Getter
     @Setter
     @NonNull // to add to constructor
-    private LocalDate nextFeedTime;
+    private LocalDateTime nextFeedTime;
 
     @Getter
     @Setter

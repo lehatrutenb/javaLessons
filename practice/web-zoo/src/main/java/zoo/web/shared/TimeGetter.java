@@ -4,11 +4,12 @@ import org.springframework.stereotype.Component;
 import zoo.web.ishared.ItimeGetter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Component
 public class TimeGetter implements ItimeGetter {
     @Override
-    public LocalDate now() {
-        return LocalDate.now();
+    public LocalDateTime now() {
+        return LocalDateTime.now();
     }
 }

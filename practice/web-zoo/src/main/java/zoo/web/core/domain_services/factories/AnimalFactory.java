@@ -49,4 +49,9 @@ public class AnimalFactory implements IanimalFactory {
                 createFeeding(animalEatType, animalType, animalMale, favoriteFood, id),
                 createHealing(id, isHealthy, birthday, animalMale));
     }
+
+    @Override
+    public AllAnimalInfo create(Animal animal, AnimalFeeding animalFeeding, AnimalHealing animalHealing) {
+        return new AllAnimalInfo(animal, animalFeeding, animalHealing);
+    }
 }

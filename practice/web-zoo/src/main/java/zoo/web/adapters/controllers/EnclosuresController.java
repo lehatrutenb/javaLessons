@@ -17,6 +17,8 @@ import zoo.web.core.application_services.dtos.response.AnimalResponse;
 import zoo.web.core.application_services.dtos.response.EnclosureResponse;
 import zoo.web.core.application_services.dtos.response.FeedingTimeResponse;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/enclosures")
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class EnclosuresController {
 
     @PostMapping
     @Operation(summary = "создать вольер")
-    public ResponseEntity<EnclosureResponse> createFeedingTime(
+    public ResponseEntity<EnclosureResponse> createEnclosure(
             @Valid @RequestBody EnclosureRequest request,
             BindingResult bindingResult) {
 
@@ -40,8 +42,14 @@ public class EnclosuresController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Удалить вольер")
-    public ResponseEntity<Void> deleteFeedingTime(@PathVariable String id) {
+    public ResponseEntity<Void> deleteEnclosure(@PathVariable String id) {
         facade.deleteEnclosure(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    @Operation(summary = "Получить все вольеры")
+    public ResponseEntity<List<EnclosureResponse>> getEnclosures() {
+        return ResponseEntity.status(HttpStatus.OK).body(facade.getEnclosures());
     }
 }

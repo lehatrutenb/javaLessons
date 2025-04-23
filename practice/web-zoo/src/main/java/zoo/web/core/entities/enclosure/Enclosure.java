@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import zoo.web.core.entities.animals.Animal;
 import zoo.web.core.entities.animals.AnimalEatType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,14 +27,14 @@ public class Enclosure {
     @Getter
     private final int maxAnimalAmount;
 
-    private List<Animal> animals = List.of();
+    private List<Animal> animals = new ArrayList<>();
 
     public void addAnimal(Animal animal) {
         animals.add(animal);
     }
 
     public boolean hasAnimal(Animal animal) {
-        return !animals.stream().filter(curAnimal -> curAnimal.getId() == animal.getId()).toList().isEmpty();
+        return !animals.stream().filter(curAnimal -> curAnimal.getId().equals(animal.getId())).toList().isEmpty();
     }
 
     public boolean removeAnimal(Animal animal) {

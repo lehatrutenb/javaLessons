@@ -13,7 +13,7 @@ import zoo.web.core.entities.enclosure.Enclosure;
 @Component
 public class EnclosureResponseMapper {
     private final IEnclosureResponseFactory enclosureResponseFactory;
-    public EnclosureResponse getAnimalResponse(Enclosure enclosure) {
+    public EnclosureResponse getEnclosureResponse(Enclosure enclosure) {
         return enclosureResponseFactory.create(enclosure);
     }
 }
