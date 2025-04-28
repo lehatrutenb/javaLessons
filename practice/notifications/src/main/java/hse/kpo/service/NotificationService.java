@@ -32,6 +32,7 @@ public class NotificationService {
 
     @Scheduled(fixedRate = 20_000)  // Каждые 20 сек
     public void checkSalesAndNotify() {
+        log.warn("getting report");
         ReportResponse report = reportService.getLatestReport(null);
         parseAndSendNotifications(report.getContent());
     }
@@ -68,97 +69,97 @@ public class NotificationService {
         }
 
         IntSummaryStatistics legStats = customers.stream()
-                .filter(CustomerData::isValid)
-                .mapToInt(CustomerData::legPower)
-                .summaryStatistics();
+            .filter(CustomerData::isValid)
+            .mapToInt(CustomerData::legPower)
+            .summaryStatistics();
 
         IntSummaryStatistics handStats = customers.stream()
-                .filter(CustomerData::isValid)
-                .mapToInt(CustomerData::handPower)
-                .summaryStatistics();
+            .filter(CustomerData::isValid)
+            .mapToInt(CustomerData::handPower)
+            .summaryStatistics();
 
         IntSummaryStatistics iqStats = customers.stream()
-                .filter(CustomerData::isValid)
-                .mapToInt(CustomerData::iq)
-                .summaryStatistics();
+            .filter(CustomerData::isValid)
+            .mapToInt(CustomerData::iq)
+            .summaryStatistics();
 
         long totalCars = customers.stream()
-                .filter(CustomerData::isValid)
-                .mapToInt(CustomerData::carsCount)
-                .sum();
+            .filter(CustomerData::isValid)
+            .mapToInt(CustomerData::carsCount)
+            .sum();
 
         long totalCatamarans = customers.stream()
-                .filter(CustomerData::isValid)
-                .mapToInt(CustomerData::catamaransCount)
-                .sum();
+            .filter(CustomerData::isValid)
+            .mapToInt(CustomerData::catamaransCount)
+            .sum();
 
         long totalTransport = totalCars +totalCatamarans;
 
         List<CustomerData> suspicious = customers.stream()
-                .filter(c -> c.legPower() > 1000 || c.handPower() > 1000 || c.iq() > 300)
-                .toList();
+            .filter(c -> c.legPower() > 1000 || c.handPower() > 1000 || c.iq() > 300)
+            .toList();
 
         var topByTransport = customers.stream().sorted(Comparator.comparing(CustomerData::carsCount).reversed()).toList();
 
         // Формируем сообщение
         StringBuilder message = new StringBuilder()
-                .append("🏪 *Детальный отчет о продажах*\n")
-                .append(String.format("📅 %s%n%n", LocalDate.now()))
+            .append("🏪 *Детальный отчет о продажах*\n")
+            .append(String.format("📅 %s%n%n", LocalDate.now()))
 
-                // Основная статистика
-                .append("📊 *Основные показатели:*\n")
-                .append(String.format("💰 Всего продаж: %d%n", totalSales))
-                .append(String.format("👤 Уникальных клиентов: %d%n", customerMap.size()))
-                .append(String.format("🚘 Всего транспорта: %d%n", totalTransport))
-                .append(String.format("✅ Корректные записи: %d%n", validCount))
-                .append(String.format("⚠️ Некорректные записи: %d%n%n", invalidCount))
+            // Основная статистика
+            .append("📊 *Основные показатели:*\n")
+            .append(String.format("💰 Всего продаж: %d%n", totalSales))
+            .append(String.format("👤 Уникальных клиентов: %d%n", customerMap.size()))
+            .append(String.format("🚘 Всего транспорта: %d%n", totalTransport))
+            .append(String.format("✅ Корректные записи: %d%n", validCount))
+            .append(String.format("⚠️ Некорректные записи: %d%n%n", invalidCount))
 
-                // Физические показатели
-                .append("🏋️ *Физические характеристики:*\n")
-                .append(String.format("🦵 Сила ног: Ø%.1f (min: %d, max: %d)%n",
-                        legStats.getAverage(), legStats.getMin(), legStats.getMax()))
-                .append(String.format("💪 Сила рук: Ø%.1f (min: %d, max: %d)%n",
-                        handStats.getAverage(), handStats.getMin(), handStats.getMax()))
-                .append(String.format("🧠 IQ: Ø%.1f (min: %d, max: %d)%n%n",
-                        iqStats.getAverage(), iqStats.getMin(), iqStats.getMax()))
+            // Физические показатели
+            .append("🏋️ *Физические характеристики:*\n")
+            .append(String.format("🦵 Сила ног: Ø%.1f (min: %d, max: %d)%n",
+                legStats.getAverage(), legStats.getMin(), legStats.getMax()))
+            .append(String.format("💪 Сила рук: Ø%.1f (min: %d, max: %d)%n",
+                handStats.getAverage(), handStats.getMin(), handStats.getMax()))
+            .append(String.format("🧠 IQ: Ø%.1f (min: %d, max: %d)%n%n",
+                iqStats.getAverage(), iqStats.getMin(), iqStats.getMax()))
 
-                // Распределение транспорта
-                .append("🚘 *Распределение транспорта:*\n")
-                .append(String.format("🚗 Автомобили: %d (%.1f%%)%n",
-                        totalCars, (totalCars * 100.0) / totalTransport))
-                .append(String.format("🚤 Катамараны: %d (%.1f%%)%n%n",
-                        totalCatamarans, (totalCatamarans * 100.0) / totalTransport))
+            // Распределение транспорта
+            .append("🚘 *Распределение транспорта:*\n")
+            .append(String.format("🚗 Автомобили: %d (%.1f%%)%n",
+                totalCars, (totalCars * 100.0) / totalTransport))
+            .append(String.format("🚤 Катамараны: %d (%.1f%%)%n%n",
+                totalCatamarans, (totalCatamarans * 100.0) / totalTransport))
 
-                // Топы
-                .append("🏆 *Топ клиентов:*\n")
-                .append("🥇 Лучший покупатель: ")
-                .append(!topByTransport.isEmpty()
-                        ? topByTransport.getFirst().name()
-                        : "No customers")
-                .append("\n")
-                .append("🔝 Топ-3 по авто:\n")
-                .append(topByTransport.stream()
-                        .limit(3)
-                        .map(c -> String.format("▫ %s: %d авто", c.name(), c.carsCount()))
-                        .collect(Collectors.joining("\n")))
-                .append("\n\n")
+            // Топы
+            .append("🏆 *Топ клиентов:*\n")
+            .append("🥇 Лучший покупатель: ")
+            .append(!topByTransport.isEmpty()
+                ? topByTransport.getFirst().name()
+                : "No customers")
+            .append("\n")
+            .append("🔝 Топ-3 по авто:\n")
+            .append(topByTransport.stream()
+                .limit(3)
+                .map(c -> String.format("▫ %s: %d авто", c.name(), c.carsCount()))
+                .collect(Collectors.joining("\n")))
+            .append("\n\n")
 
-                // Аномалии
-                .append("🚨 *Подозрительные записи:*\n")
-                .append(suspicious.isEmpty() ? "ℹ️ Нет аномалий" :
-                        suspicious.stream()
-                                .map(c -> String.format(
-                                        "▫ %s (🚩Ноги:%d 🚩Руки:%d 🚩IQ:%d)",
-                                        c.name(), c.legPower(), c.handPower(), c.iq()))
-                                .collect(Collectors.joining("\n")))
-                .append("\n\n")
+            // Аномалии
+            .append("🚨 *Подозрительные записи:*\n")
+            .append(suspicious.isEmpty() ? "ℹ️ Нет аномалий" :
+                suspicious.stream()
+                    .map(c -> String.format(
+                        "▫ %s (🚩Ноги:%d 🚩Руки:%d 🚩IQ:%d)",
+                        c.name(), c.legPower(), c.handPower(), c.iq()))
+                    .collect(Collectors.joining("\n")))
+            .append("\n\n")
 
-                // Заключение
-                .append("📈 *Эффективность продаж:*\n")
-                .append(String.format("📦 Продаж/клиент: Ø%.1f",
-                        (double) totalSales / customerMap.size()));
+            // Заключение
+            .append("📈 *Эффективность продаж:*\n")
+            .append(String.format("📦 Продаж/клиент: Ø%.1f",
+                (double) totalSales / customerMap.size()));
+
         sendToTelegram(message.toString());
-        // sendToTelegram("hello");
     }
 
     private CustomerData parseCustomer(String raw) {
@@ -176,12 +177,12 @@ public class NotificationService {
             boolean hasCatamaran = !raw.contains("catamaran=null");
 
             return CustomerData.createValid(
-                    name,
-                    legPower,
-                    handPower,
-                    iq,
-                    carsCount,
-                    hasCatamaran ? 1 : 0
+                name,
+                legPower,
+                handPower,
+                iq,
+                carsCount,
+                hasCatamaran ? 1 : 0
             );
         } catch (Exception e) {
             return CustomerData.INVALID;
@@ -191,8 +192,8 @@ public class NotificationService {
     private void sendToTelegram(String message) {
         log.warn("sending to tg");
         SendMessage sendMessage = new SendMessage(
-                notificationBot.getChatId(),
-                message
+            notificationBot.getChatId(),
+            message
         );
         try {
             notificationBot.execute(sendMessage);

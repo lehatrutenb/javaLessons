@@ -47,18 +47,18 @@ public class HseCarService implements CarProvider{
     @Sales
     public void sellCars() {
         customerProvider.getCustomers().stream()
-                .filter(customer -> customer.getCars() == null || customer.getCars().isEmpty())
-                .forEach(customer -> {
-                    Car car = takeCar(customer);
-                    if (Objects.nonNull(car)) {
-                        customer.getCars().add(car); // Добавляем автомобиль в список клиента
-                        car.setCustomer(customer);   // Устанавливаем ссылку на клиента в автомобиле
-                        carRepository.save(car);     // Сохраняем изменения
-                        notifyObserversForSale(customer, ProductionTypes.CAR, car.getVin());
-                    } else {
-                        log.warn("No car in CarService");
-                    }
-                });
+            .filter(customer -> customer.getCars() == null || customer.getCars().isEmpty())
+            .forEach(customer -> {
+                Car car = takeCar(customer);
+                if (Objects.nonNull(car)) {
+                    customer.getCars().add(car); // Добавляем автомобиль в список клиента
+                    car.setCustomer(customer);   // Устанавливаем ссылку на клиента в автомобиле
+                    carRepository.save(car);     // Сохраняем изменения
+                    notifyObserversForSale(customer, ProductionTypes.CAR, car.getVin());
+                } else {
+                    log.warn("No car in CarService");
+                }
+            });
     }
 
     @Override
