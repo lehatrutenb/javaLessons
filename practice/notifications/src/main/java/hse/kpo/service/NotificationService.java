@@ -30,15 +30,14 @@ public class NotificationService {
     private final ReportServiceGrpc.ReportServiceBlockingStub reportService;
     private final NotificationBot notificationBot;
 
-    @Scheduled(fixedRate = 5_000)  // Каждую минуту
+    @Scheduled(fixedRate = 20_000)  // Каждые 20 сек
     public void checkSalesAndNotify() {
-        log.warn("getting report");
         ReportResponse report = reportService.getLatestReport(null);
         parseAndSendNotifications(report.getContent());
     }
 
     private void parseAndSendNotifications(String reportContent) { // String reportContent
-        /*// Отделяем секцию с покупателями от операций
+        // Отделяем секцию с покупателями от операций
         String[] parts = reportContent.split("Операция: ");
         String customersSection = parts[0];
 
@@ -158,8 +157,8 @@ public class NotificationService {
                 .append("📈 *Эффективность продаж:*\n")
                 .append(String.format("📦 Продаж/клиент: Ø%.1f",
                         (double) totalSales / customerMap.size()));
-        sendToTelegram(message.toString());*/
-        sendToTelegram("hello");
+        sendToTelegram(message.toString());
+        // sendToTelegram("hello");
     }
 
     private CustomerData parseCustomer(String raw) {
