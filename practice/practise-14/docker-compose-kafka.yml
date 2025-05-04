@@ -6,6 +6,8 @@ services:
     container_name: zookeeper
     ports:
       - "2181:2181"
+    volumes:
+      - ./zookeeper/data:/bitnami/zookeeper/data
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
     networks:
@@ -33,7 +35,7 @@ services:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-ui
     ports:
-      - "8085:8080"
+      - "8086:8080"
     environment:
       - KAFKA_CLUSTERS_0_NAME=local
       - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092, localhost:9092, localhost:29092
