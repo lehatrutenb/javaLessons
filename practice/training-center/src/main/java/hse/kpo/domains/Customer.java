@@ -1,7 +1,6 @@
 package hse.kpo.domains;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import hse.kpo.enums.TrainTypes;
 import jakarta.persistence.CascadeType;
@@ -22,6 +21,8 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Math.round;
+
 /**
  * Класс, описывающий покупателя.
  */
@@ -32,7 +33,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Customer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.AUTO) // not GenerationType.IDENTITY cause want to have same ids as in main service
     private Integer id;
 
     @Column(nullable = false, unique = true)
@@ -48,12 +49,13 @@ public class Customer {
     @Column(nullable = false)
     private int iq;
 
-    public Customer(String name, int legPower, int handPower, int iq) {
+/*    public Customer(String name, int legPower, int handPower, int iq) { customer can't be init without id
         this.name = name;
         this.legPower = legPower;
         this.handPower = handPower;
         this.iq = iq;
     }
+ */
 
     public Customer(Integer id, String name, int legPower, int handPower, int iq) {
         this.id = id;
@@ -79,5 +81,9 @@ public class Customer {
             }
             default -> throw new IllegalArgumentException();
         }
+    }
+
+    public String toString() {
+        return String.format("id: %s, iq: %s, name: %s, leg power: %s, hand power: %s", id.toString(), iq, name, legPower, handPower);
     }
 }

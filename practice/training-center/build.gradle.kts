@@ -4,8 +4,16 @@ plugins {
     jacoco
     id("org.springframework.boot") version "3.4.2"
     id("io.spring.dependency-management") version "1.1.7"
-    id("org.liquibase.gradle") version "2.0.4"
+    // id("org.liquibase.gradle") version "2.2.0"
 }
+
+//liquibase {
+//    activities {
+//        register("migrate") {
+//        }
+//    }
+//    runList = "migrate"
+//}
 
 checkstyle {
     toolVersion = "10.13.0"
@@ -76,9 +84,18 @@ dependencies {
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("org.postgresql:postgresql")
-    implementation("org.liquibase:liquibase-core")
-    liquibaseRuntime("org.liquibase:liquibase-core")
-    liquibaseRuntime("org.liquibase.ext:liquibase-hibernate6:5.0.0")
+    // implementation("org.postgresql:postgresql")
+    implementation("org.postgresql:postgresql:42.7.3")
+    //liquibaseRuntime("org.postgresql:postgresql:42.7.3")
+    //implementation("org.liquibase:liquibase-core:4.29.2")
+    //liquibaseRuntime("org.liquibase:liquibase-core:4.29.2")
+    //liquibaseRuntime("org.liquibase.ext:liquibase-hibernate6:4.29.2")
+    //liquibaseRuntime("org.liquibase:liquibase-groovy-dsl:2.1.1")
+    //liquibaseRuntime("info.picocli:picocli:4.7.5")
+    //liquibaseRuntime("org.yaml:snakeyaml:1.33")
+    //liquibaseRuntime("mysql:mysql-connector-java:5.1.34")
+    //liquibaseRuntime("org.hibernate:hibernate-core:6.1.1.Final")
+    implementation("com.databricks:databricks-jdbc:2.6.36")
 }
 
 tasks.withType<Test> {

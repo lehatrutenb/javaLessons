@@ -8,11 +8,13 @@ import hse.kpo.kafka.KafkaConsumer;
 import hse.kpo.kafka.KafkaProducer;
 import hse.kpo.repositories.IcustomerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TrainingCenterService {
@@ -24,6 +26,7 @@ public class TrainingCenterService {
     }
 
     public void addCustomer(Customer customer) {
+        log.warn(customer.toString());
         customerRepository.save(customer);
     }
 

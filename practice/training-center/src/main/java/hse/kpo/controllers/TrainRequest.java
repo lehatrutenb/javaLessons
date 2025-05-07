@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern;
 public record TrainRequest(
         @Schema(description="id посетителя")
         int customerId,
-        @Schema(description="тип тренировки", example="HAND_TRAIN")
-        @Pattern(regexp="HAND_TRAIN|LEG_TRAIN|IQ_TRAIN")
+        @Schema(description="тип тренировки", example="handPower")
+        @Pattern(regexp="handPower|legPower|iq")
         String trainType
 ) {}

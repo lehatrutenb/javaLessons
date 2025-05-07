@@ -41,6 +41,7 @@ volumes:
 
 networks:
   kafka-net:
+    name: kafka-net
     driver: bridge
   shared-net:
     driver: bridge

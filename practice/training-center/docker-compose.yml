@@ -1,5 +1,5 @@
 services:
-  postgres:
+  postgres_training_center:
     image: postgres:15-alpine
     container_name: postgres_db_training_center
     environment:
@@ -22,10 +22,10 @@ services:
     build: .
     container_name: training_center_app
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/training_center_db
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_training_center:5432/training_center_db
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
     ports:
       - "8087:8080"
       - "9091:9090"
@@ -35,7 +35,7 @@ services:
       - kafka-net
       - shared-net
     depends_on:
-      postgres:
+      postgres_training_center:
         condition: service_healthy
 
 volumes:
@@ -43,6 +43,7 @@ volumes:
 
 networks:
   kafka-net:
+    name: kafka-net
     driver: bridge
   shared-net:
     driver: bridge

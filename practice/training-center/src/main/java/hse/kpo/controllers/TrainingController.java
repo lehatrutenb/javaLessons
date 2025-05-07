@@ -25,7 +25,7 @@ public class TrainingController {
     @Operation(summary = "Потренировать пользователя")
     public ResponseEntity<Void> trainCustomer(
             @Valid @RequestBody TrainRequest request,
-            BindingResult bindingResult) throws Throwable {
+            BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -38,14 +38,7 @@ public class TrainingController {
 
     @GetMapping("/")
     @Operation(summary = "Получить список пользователей")
-    public ResponseEntity<List<CustomerResponse>> getCustomers(
-            BindingResult bindingResult) throws Throwable {
-
-        if (bindingResult.hasErrors()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    bindingResult.getAllErrors().getFirst().getDefaultMessage());
-        }
-
+    public ResponseEntity<List<CustomerResponse>> getCustomers() {
         return ResponseEntity.status(HttpStatus.CREATED).body(facade.getCustomers());
     }
 }

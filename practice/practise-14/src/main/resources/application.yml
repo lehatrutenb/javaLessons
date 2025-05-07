@@ -35,7 +35,7 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: "hse.kpo,java.util,java.lang"
+        spring.json.trusted.packages: "hse.kpo,java.util,java.lang,hse.kpo.kafka" # list of trusted classes to serialize/deserialize
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
