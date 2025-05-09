@@ -1,0 +1,22 @@
+services:
+  app:
+    build: .
+    container_name: api_gateway_app
+    ports:
+      - "8087:8080"
+      - "9091:9090"
+    networks:
+      - shared-net
+    environment:
+      GRPC_STORING_SERVICE_URL: storing_service:9092
+    depends_on:
+      postgres_training_center:
+        condition: service_healthy
+
+volumes:
+  postgres_data_training_center:
+
+networks:
+  shared-net:
+    name: shared-net
+    driver: bridge

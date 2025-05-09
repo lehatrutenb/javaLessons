@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: api-gateway-app
+  grpc:
+    client:
+      report-service:
+        address: 'static://${GRPC_STORING_SERVICE_URL}'
+        negotiation-type: plaintext
+server:
+  port: 8080
