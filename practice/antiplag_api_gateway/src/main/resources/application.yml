@@ -1,10 +1,13 @@
 spring:
   application:
     name: api-gateway-app
-  grpc:
-    client:
-      report-service:
-        address: 'static://${GRPC_STORING_SERVICE_URL}'
-        negotiation-type: plaintext
+grpc:
+  client:
+    StoringService:
+      address: 'static://storing_service_app:7071' # 'static://${GRPC_STORING_SERVICE_URL:localhost:7071}'
+      negotiation-type: plaintext
+    AnalysisService:
+      address: 'static://analysis_service_app:7072' # 'static://${GRPC_ANALYSIS_SERVICE_URL:localhost:7072}'
+      negotiation-type: plaintext
 server:
-  port: 8080
+  port: ${API_SERVICE_PORT:8080}

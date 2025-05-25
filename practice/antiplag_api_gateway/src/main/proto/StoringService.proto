@@ -1,18 +1,20 @@
 syntax = "proto3";
 
 import "validate/validate.proto";
+import "google/protobuf/struct.proto";
 
 option java_multiple_files = true;
-option java_package = "antiplag.apigateway.grpc";
+option java_package = "antiplag.fileStoringService.grpc";
 option java_outer_classname = "StoringServiceProto";
 
 service StoringService {
   rpc storeFile (FileStoreRequest) returns (FileMetaResponse);
-  rpc loadFile (FileLoadRequest) returns (FileBodyResponse);
+  rpc loadFile (FileLoadRequest) returns (FileDataResponse);
 }
 
 message FileStoreRequest {
     string data = 1;
+    string name = 2;
 }
 
 message FileLoadRequest {
@@ -25,8 +27,17 @@ message FileMetaResponse {
                                pattern:   "^(0[1-9]|[12]\\d|3[01])\\.(0[1-9]|1[1,2])\\.\\d{4} ([0-1]\\d|2[0-4]):([0-5]\\d|60)$",
                                max_bytes: 256,
                            }]; // "01.04.2005 10:00"
+    string name = 3;
 }
 
-message FileBodyResponse {
+message FileResponse {
     string data = 1;
+    FileMetaResponse metaData = 2;
+}
+
+message FileDataResponse {
+    oneof fileData {
+        FileResponse file = 1;
+        google.protobuf.NullValue null = 2;
+    }
 }

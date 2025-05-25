@@ -33,9 +33,9 @@ public class FileStoringController {
         return ResponseEntity.status(HttpStatus.CREATED).body(storingService.storeFile(request));
     }
 
-    @GetMapping("/{id")
+    @GetMapping("/{id}")
     @Operation(summary = "выгрузить файл")
     public ResponseEntity<FileBodyResponse> loadFile(@PathVariable int id) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(storingService.loadFile(new FileLoadRequest(id)));
+        return ResponseEntity.status(HttpStatus.OK).body(storingService.loadFile(new FileLoadRequest(id)));
     }
 }

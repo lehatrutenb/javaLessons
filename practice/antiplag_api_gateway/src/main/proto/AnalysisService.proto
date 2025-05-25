@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+import "validate/validate.proto";
+import "google/protobuf/struct.proto";
+
+option java_multiple_files = true;
+option java_package = "antiplag.fileAnalysisService.grpc";
+option java_outer_classname = "AnalysisServiceProto";
+
+service AnalysisService {
+  rpc analyseFile (AnalyseRequest) returns (AnalyseWrappedResponse);
+  rpc getWordCloud (WordCloudRequest) returns (WordCloudWrappedResponse);
+}
+
+message AnalyseRequest {
+     int32 id = 1;
+     bool forceRecalc = 2;
+}
+
+message WordCloudRequest {
+     int32 id = 1;
+}
+
+message FileCloseness {
+    int32 id = 1;
+    string name = 2;
+    int32 closenessRank = 3;
+}
+
+message AnalyseResponse {
+    repeated FileCloseness closestFiles = 1;
+}
+
+message AnalyseWrappedResponse {
+    oneof optResponse {
+        AnalyseResponse response = 1;
+        google.protobuf.NullValue null = 2;
+    }
+}
+
+enum ImageFormat {
+  PNG = 0;
+  JPG = 1;
+}
+
+message WordCloudResponse {
+    bytes img = 1;
+    ImageFormat imgFormat = 2;
+}
+
+message WordCloudWrappedResponse {
+    oneof optResponse {
+        WordCloudResponse response = 1;
+        google.protobuf.NullValue null = 2;
+    }
+}

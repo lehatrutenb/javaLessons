@@ -1,7 +1,6 @@
 package antiplag.apigateway.use_cases.services;
 
 import antiplag.apigateway.outAdapters.IfileStoringOutController;
-import antiplag.apigateway.outAdapters.grpc.FileStoringOutController;
 import antiplag.apigateway.use_cases.dtos.requests.FileLoadRequest;
 import antiplag.apigateway.use_cases.dtos.requests.FileStoreRequest;
 import antiplag.apigateway.use_cases.dtos.responses.FileBodyResponse;
@@ -18,6 +17,6 @@ public class StoringService {
         return fileStoringOutController.storeFile(request);
     }
     public FileBodyResponse loadFile(FileLoadRequest request) {
-        return fileStoringOutController.loadFile(request);
+        return fileStoringOutController.loadFile(request).orElseThrow();
     }
 }

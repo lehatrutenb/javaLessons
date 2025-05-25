@@ -1,6 +1,5 @@
 plugins {
     java
-    checkstyle
     jacoco
     id("org.springframework.boot") version "3.4.2"
     id("io.spring.dependency-management") version "1.1.7"
@@ -61,7 +60,10 @@ dependencies {
     implementation("io.grpc:grpc-stub:1.62.2")
     implementation("io.grpc:grpc-protobuf:1.62.2")
     implementation("net.devh:grpc-client-spring-boot-starter:3.0.0.RELEASE")
+    implementation("io.envoyproxy.protoc-gen-validate:pgv-java-stub:0.6.13") // validating
     compileOnly("org.apache.tomcat:annotations-api:6.0.53")
+    implementation("net.devh:grpc-server-spring-boot-autoconfigure:2.15.0.RELEASE")
+    implementation("net.devh:grpc-server-spring-boot-starter:2.15.0.RELEASE")
 
     // Repository
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

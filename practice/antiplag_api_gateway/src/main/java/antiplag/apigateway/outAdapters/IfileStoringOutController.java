@@ -5,7 +5,9 @@ import antiplag.apigateway.use_cases.dtos.requests.FileStoreRequest;
 import antiplag.apigateway.use_cases.dtos.responses.FileBodyResponse;
 import antiplag.apigateway.use_cases.dtos.responses.FileMetaResponse;
 
+import java.util.Optional;
+
 public interface IfileStoringOutController {
     public FileMetaResponse storeFile(FileStoreRequest request);
-    public FileBodyResponse loadFile(FileLoadRequest request);
+    public Optional<FileBodyResponse> loadFile(FileLoadRequest request);
 }

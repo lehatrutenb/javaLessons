@@ -1,0 +1,55 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres_antiplag_analysis_storing
+    environment:
+      POSTGRES_DB: analysis_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data_antiplag_analysis:/var/lib/postgresql/data
+    ports:
+      - "5502:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - shared-net
+
+  app:
+    build: .
+    container_name: analysis_service_app
+    ports:
+      # - "8082:8080" # server
+      - "7072:7070" # grpc
+    networks:
+      - shared-net
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_antiplag_analysis_storing:5432/analysis_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      GRPC_LISTENING_PORT: 7070
+      FILE_ANALYSIS_SERVICE_PORT: 8080
+      SPRING_CACHING_DATASOURCE_HOST: redis_antiplag_analysis_caching
+      SPRING_CACHING_DATASOURCE_PORT: 6379
+      GRPC_STORING_SERVICE_URL: 7070
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  redis:
+    container_name: redis_antiplag_analysis_caching
+    image: redis:alpine
+    ports:
+      - "6372:6379"
+
+volumes:
+  postgres_data_antiplag_analysis:
+
+networks:
+  shared-net:
+    name: shared-net
+    driver: bridge
