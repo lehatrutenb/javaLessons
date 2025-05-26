@@ -27,7 +27,9 @@ public class FileAnalyser implements IfileAnalyzer {
     @Override
     public AnalysationResult getClosestFiles(File fToCheck, List<File> files) {
         return analysationResultFactory.createAnalysationResult(
-                files.stream().map(file -> calcCloseness(fToCheck, file)).sorted(Comparator.comparing(FileCloseness::rank)).limit(maxFileInResponseAmount).toList(),
+                files.stream().map(file -> calcCloseness(fToCheck, file))
+                        .sorted(Comparator.comparing(FileCloseness::rank).reversed())
+                        .limit(maxFileInResponseAmount).toList(),
                 fToCheck.getId()
         );
     }

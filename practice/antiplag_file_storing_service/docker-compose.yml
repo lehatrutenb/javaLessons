@@ -15,16 +15,15 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    networks:
-      - shared-net
 
   app:
     build: .
-    container_name: storing_service_app
+    container_name: storingServiceApp
     ports:
       - "7071:7070" # grpc
     networks:
       - shared-net
+      - default
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_antiplag_file_storing:5432/file_db
       SPRING_DATASOURCE_USERNAME: postgres

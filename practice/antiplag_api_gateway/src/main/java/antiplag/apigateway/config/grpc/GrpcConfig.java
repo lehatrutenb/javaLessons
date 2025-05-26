@@ -2,6 +2,7 @@ package antiplag.apigateway.config.grpc;
 
 import antiplag.fileAnalysisService.grpc.AnalysisServiceGrpc;
 import antiplag.fileStoringService.grpc.StoringServiceGrpc;
+import io.grpc.ManagedChannel;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

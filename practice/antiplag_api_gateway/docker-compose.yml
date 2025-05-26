@@ -7,8 +7,8 @@ services:
     networks:
       - shared-net
     environment:
-      GRPC_STORING_SERVICE_URL: storing_service_app:7071
-      GRPC_ANALYSIS_SERVICE_URL: analysis_service_app:7072
+      GRPC_STORING_SERVICE_URL: storingServiceApp:7070
+      GRPC_ANALYSIS_SERVICE_URL: analysisServiceApp:7070
       API_SERVICE_PORT: 8080
 
 networks:

@@ -1,8 +1,8 @@
 spring:
   data:
     redis:
-      host: ${SPRING_CACHING_DATASOURCE_HOST:localhost}
-      port: ${SPRING_CACHING_DATASOURCE_PORT:6372}
+      host: redis_antiplag_analysis_caching #${SPRING_CACHING_DATASOURCE_HOST:localhost}
+      port: 6379 #${SPRING_CACHING_DATASOURCE_PORT:6372}
 
   application:
       name: file-analysis-app
