@@ -1,8 +1,7 @@
 package hse.kpo.interfaces;
 
+import hse.kpo.domains.Car;
 
-import hse.kpo.domains.Ship;
-
-public interface IshipFactory<TParams> {
-    Ship createShip(TParams shipParams, int shipNumber);
+public interface IShipFactory<TParams> {
+    Car create(TParams carParams, int carNumber);
 }

@@ -1,10 +1,8 @@
 package hse.kpo.interfaces;
 
 import hse.kpo.domains.Car;
+import lombok.experimental.UtilityClass;
 
-/**
- * Интерфейс который должны реализовывать фабрики машин.
- */
-public interface IcarFactory<CparamsT> {
-    Car createCar(CparamsT carParams, int carNumber);
+public interface ICarFactory<TParams> {
+    Car create(TParams carParams, int carNumber);
 }
