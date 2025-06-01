@@ -1,0 +1,32 @@
+spring:
+  data:
+    redis:
+      host: redis_antiplag_analysis_caching #${SPRING_CACHING_DATASOURCE_HOST:localhost}
+      port: 6379 #${SPRING_CACHING_DATASOURCE_PORT:6372}
+
+  application:
+      name: file-analysis-app
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5502/analysis_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    jpa:
+      show-sql: false
+      hibernate:
+        ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+          format_sql: true
+
+grpc:
+  server:
+    port: ${GRPC_LISTENING_PORT:7072}
+  client:
+    StoringService:
+      address: 'static://${GRPC_STORING_SERVICE_URL:localhost:7071}'
+      negotiation-type: plaintext
+
+server:
+  port: ${FILE_ANALYSIS_SERVICE_PORT:8082}

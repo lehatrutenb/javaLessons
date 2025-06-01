@@ -4,23 +4,36 @@ import hse.kpo.enums.EngineTypes;
 import hse.kpo.enums.ProductionTypes;
 import hse.kpo.interfaces.Engine;
 import hse.kpo.interfaces.Transport;
+import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
  * Класс хранящий информацию о катамаране.
  */
+@NoArgsConstructor
+@Entity
+@Table(name = "catamarans")
 @ToString
 public class Catamaran implements Transport {
 
     @Getter
-    private Engine engine;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "engine_id")
+    private AbstractEngine engine;
 
     @Getter
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int vin;
 
-    public Catamaran(int vin, Engine engine) {
+    public Catamaran(int vin, AbstractEngine engine) {
         this.vin = vin;
+        this.engine = engine;
+    }
+
+    public Catamaran(AbstractEngine engine) {
         this.engine = engine;
     }
 

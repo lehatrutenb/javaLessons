@@ -1,5 +1,6 @@
 package hse.kpo.controllers.cars;
 
+import hse.kpo.domains.AbstractEngine;
 import hse.kpo.domains.HandEngine;
 import hse.kpo.domains.LevitationEngine;
 import hse.kpo.domains.PedalEngine;
@@ -28,14 +29,14 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Автомобили", description = "Управление транспортными средствами")
 public class CarController {
-    private final CarStorage carStorage;
+    // private final CarStorage carStorage;
     private final HseCarService carService;
     private final Hse hseFacade;
 
     @GetMapping("/{vin}")
     @Operation(summary = "Получить автомобиль по VIN")
     public ResponseEntity<Car> getCarByVin(@PathVariable int vin) {
-        return carStorage.getCars().stream()
+        return carService.getCars().stream()
                 .filter(car -> car.getVin() == vin)
                 .findFirst()
                 .map(ResponseEntity::ok)
@@ -80,13 +81,13 @@ public class CarController {
     @PostMapping("/sell/{vin}")
     @Operation(summary = "Продать автомобиль по VIN")
     public ResponseEntity<Void> sellCar(@PathVariable int vin) {
-        var carOptional = carStorage.getCars().stream()
+        var carOptional = carService.getCars().stream()
                 .filter(c -> c.getVin() == vin)
                 .findFirst();
 
         if (carOptional.isPresent()) {
             var car = carOptional.get();
-            carStorage.getCars().remove(car);
+            carService.getCars().remove(car);
             // Логика продажи (упрощенно)
             hseFacade.sell();
             return ResponseEntity.ok().build();
@@ -100,13 +101,13 @@ public class CarController {
             @PathVariable int vin,
             @Valid @RequestBody CarRequest request) {
 
-        return carStorage.getCars().stream()
+        return carService.getCars().stream()
                 .filter(car -> car.getVin() == vin)
                 .findFirst()
                 .map(existingCar -> {
                     var updatedCar = createCarFromRequest(request, vin);
-                    carStorage.getCars().remove(existingCar);
-                    carStorage.addExistingCar(updatedCar);
+                    carService.getCars().remove(existingCar);
+                    carService.addExistingCar(updatedCar);
                     return ResponseEntity.ok(updatedCar);
                 })
                 .orElse(ResponseEntity.notFound().build());
@@ -115,7 +116,7 @@ public class CarController {
     @DeleteMapping("/{vin}")
     @Operation(summary = "Удалить автомобиль")
     public ResponseEntity<Void> deleteCar(@PathVariable int vin) {
-        boolean removed = carStorage.getCars().removeIf(car -> car.getVin() == vin);
+        boolean removed = carService.getCars().removeIf(car -> car.getVin() == vin);
         return removed ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 
@@ -129,7 +130,7 @@ public class CarController {
             @RequestParam(required = false) String engineType,
             @RequestParam(required = false) Integer minVin) {
 
-        return carStorage.getCars().stream()
+        return carService.getCars().stream()
                 .filter(car -> engineType == null || car.getEngineType().equals(engineType))
                 .filter(car -> minVin == null || car.getVin() >= minVin)
                 .toList();
@@ -141,6 +142,6 @@ public class CarController {
             case HAND -> new HandEngine();
             case LEVITATION -> new LevitationEngine();
         };
-        return new Car(vin, engine);
+        return new Car((AbstractEngine) engine);
     }
 }

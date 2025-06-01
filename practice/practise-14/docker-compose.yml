@@ -7,14 +7,16 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_non_auto2:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5499:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - shared-net
 
   app:
     build: .
@@ -25,10 +27,21 @@ services:
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_JPA_HIBERNATE_DDL_AUTO: none
     ports:
-      - "8080:8080"
+      - "8085:8080"
+      - "9090:9090"
     depends_on:
       postgres:
         condition: service_healthy
+    networks:
+      - shared-net
+      - kafka-net
 
 volumes:
-  postgres_data:
+  postgres_data_non_auto2:
+
+networks:
+  kafka-net:
+    name: kafka-net
+    driver: bridge
+  shared-net:
+    driver: bridge

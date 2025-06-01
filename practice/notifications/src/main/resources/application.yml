@@ -1,0 +1,11 @@
+grpc:
+  client:
+    report-service:
+      address: 'static://localhost:9090' # Порт grpc основного приложения
+      negotiation-type: plaintext
+
+telegram:
+  bot:
+    username: "kpo_java_bot"
+    token: "7647848692:AAGJ1Y_dFnvhmovlbikDLa9un6fcDW5jFaM"
+    chat-id: "438456884"

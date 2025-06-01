@@ -101,8 +101,8 @@ public class Hse {
         return carStorage.addCar(levitationCarFactory, EmptyEngineParams.DEFAULT);
     }
 
-    public void addWheelCatamaran() {
-        carStorage.addExistingCar(new CatamaranWithWheels(createCatamaran()));
+    public Car addWheelCatamaran() {
+        return carStorage.addExistingCar(new CatamaranWithWheels(createCatamaran()));
     }
 
     private Catamaran createCatamaran() {
@@ -121,22 +121,22 @@ public class Hse {
      *
      * @param pedalSize размер педалей (1-15)
      */
-    public void addPedalCatamaran(int pedalSize) {
-        catamaranStorage.addCatamaran(pedalCatamaranFactory, new PedalEngineParams(pedalSize));
+    public Catamaran addPedalCatamaran(int pedalSize) {
+        return catamaranStorage.addCatamaran(pedalCatamaranFactory, new PedalEngineParams(pedalSize));
     }
 
     /**
      * Добавляет катамаран с ручным приводом.
      */
-    public void addHandCatamaran() {
-        catamaranStorage.addCatamaran(handCatamaranFactory, EmptyEngineParams.DEFAULT);
+    public Catamaran addHandCatamaran() {
+       return  catamaranStorage.addCatamaran(handCatamaranFactory, EmptyEngineParams.DEFAULT);
     }
 
     /**
      * Добавляет левитирующий катамаран.
      */
-    public void addLevitationCatamaran() {
-        catamaranStorage.addCatamaran(levitationCatamaranFactory, EmptyEngineParams.DEFAULT);
+    public Catamaran addLevitationCatamaran() {
+        return catamaranStorage.addCatamaran(levitationCatamaranFactory, EmptyEngineParams.DEFAULT);
     }
 
     /**

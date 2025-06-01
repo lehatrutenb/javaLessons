@@ -2,7 +2,8 @@ spring:
   application:
     name: kpo-app
   datasource:
-    url: jdbc:postgresql://localhost:5432/car_db
+    url: jdbc:postgresql://localhost:5499/car_db
+    # 5432
     username: postgres
     password: postgres
 #    url: ${SPRING_DATASOURCE_URL}
@@ -13,7 +14,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none # use update for defining themes from java, none for versioning by hands
 #      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
     properties:
       hibernate:

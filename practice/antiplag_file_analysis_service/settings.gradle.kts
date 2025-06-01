@@ -1,0 +1,1 @@
+rootProject.name = "antiplag_file_analysis_service"

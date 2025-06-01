@@ -2,6 +2,8 @@ package hse.kpo.domains;
 
 import hse.kpo.enums.ProductionTypes;
 import hse.kpo.interfaces.Engine;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -9,8 +11,10 @@ import lombok.ToString;
  * Класс, реализующий {@link Engine} ручного типа.
  */
 @NoArgsConstructor
+@Entity
+@DiscriminatorValue("LEVITATION")
 @ToString
-public class LevitationEngine implements Engine {
+public class LevitationEngine extends AbstractEngine {
     @Override
     public boolean isCompatible(Customer customer, ProductionTypes type) {
         return switch (type) {

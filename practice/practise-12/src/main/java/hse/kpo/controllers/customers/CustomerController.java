@@ -4,7 +4,7 @@ import hse.kpo.domains.Customer;
 import hse.kpo.dto.request.CustomerRequest;
 import hse.kpo.dto.response.CustomerResponse;
 import hse.kpo.facade.Hse;
-import hse.kpo.storages.CustomerStorage;
+import hse.kpo.services.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Tag(name = "Клиенты", description = "Управление клиентами")
 public class CustomerController {
     private final Hse hseFacade;
-    private final CustomerStorage customerStorage;
+    private final CustomerService customerService;
 
     @PostMapping
     @Operation(summary = "Создать клиента")
@@ -61,13 +61,13 @@ public class CustomerController {
     @GetMapping
     @Operation(summary = "Получить всех клиентов")
     public List<CustomerResponse> getAllCustomers() {
-        return customerStorage.getCustomers().stream()
+        return customerService.getCustomers().stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
 
     private Customer findCustomerByName(String name) {
-        return customerStorage.getCustomers().stream()
+        return customerService.getCustomers().stream()
                 .filter(c -> c.getName().equals(name))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Клиент не найден"));
@@ -79,7 +79,7 @@ public class CustomerController {
                 customer.getLegPower(),
                 customer.getHandPower(),
                 customer.getIq(),
-                customer.getCar() != null ? customer.getCar().getVin() : null,
+                customer.getCars() != null ? customer.getCars().stream().map(car -> car.getVin()).toList() : null, // ??? first
                 customer.getCatamaran() != null ? customer.getCatamaran().getVin() : null
         );
     }

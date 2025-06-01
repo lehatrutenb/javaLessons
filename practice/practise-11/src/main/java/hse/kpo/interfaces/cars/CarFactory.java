@@ -15,5 +15,5 @@ public interface CarFactory<T> {
      * @param carNumber номер
      * @return {@link Car}
      */
-    Car create(T carParams, int carNumber);
+    Car create(T parameters);
 }

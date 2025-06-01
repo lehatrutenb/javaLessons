@@ -1,4 +1,4 @@
-# Занятие 11. Database
+# Занятие 11. БД
 
 ## Цель занятия
 - Научиться работать с базой данных.
@@ -360,7 +360,6 @@ spring:
 #    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
-    show-sql: true
     hibernate:
       ddl-auto: update
 #      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}

@@ -15,5 +15,5 @@ public interface CatamaranFactory<T> {
      * @param catamaranNumber номер
      * @return {@link Catamaran}
      */
-    Catamaran create(T catamaranParams, int catamaranNumber);
+    Catamaran create(T catamaranParam);
 }

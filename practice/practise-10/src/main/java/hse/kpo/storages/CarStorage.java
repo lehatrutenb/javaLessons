@@ -49,7 +49,8 @@ public class CarStorage implements CarProvider {
         return car;
     }
 
-    public boolean addExistingCar(Car car) {
-        return cars.add(car);
+    public Car addExistingCar(Car car) {
+        cars.add(car);
+        return car;
     }
 }

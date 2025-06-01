@@ -30,14 +30,14 @@ public class NotificationService {
     private final ReportServiceGrpc.ReportServiceBlockingStub reportService;
     private final NotificationBot notificationBot;
 
-    @Scheduled(fixedRate = 60_000)  // Каждую минуту
+    @Scheduled(fixedRate = 20_000)  // Каждые 20 сек
     public void checkSalesAndNotify() {
         log.warn("getting report");
         ReportResponse report = reportService.getLatestReport(null);
         parseAndSendNotifications(report.getContent());
     }
 
-    private void parseAndSendNotifications(String reportContent) {
+    private void parseAndSendNotifications(String reportContent) { // String reportContent
         // Отделяем секцию с покупателями от операций
         String[] parts = reportContent.split("Операция: ");
         String customersSection = parts[0];

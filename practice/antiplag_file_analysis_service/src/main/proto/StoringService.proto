@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+import "validate/validate.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "antiplag.fileStoringService.grpc";
+option java_outer_classname = "StoringServiceProto";
+
+service StoringService {
+  rpc loadFile (FileLoadRequest) returns (FileDataResponse);
+  rpc getStoringFilesIDs (google.protobuf.Empty) returns (StoringFilesResponse);
+}
+
+
+message FileLoadRequest {
+    int32 id = 1;
+}
+
+message FileMetaResponse {
+    int32 id = 1;
+    string dateCreated = 2 [(validate.rules).string = {
+                               pattern:   "^(0[1-9]|[12]\\d|3[01])\\.(0[1-9]|1[1,2])\\.\\d{4} ([0-1]\\d|2[0-4]):([0-5]\\d|60)$",
+                               max_bytes: 256,
+                           }]; // "01.04.2005 10:00"
+    string name = 3;
+}
+
+message FileResponse {
+    string data = 1;
+    FileMetaResponse metaData = 2;
+}
+
+message FileDataResponse {
+    oneof fileData {
+        FileResponse file = 1;
+        google.protobuf.NullValue null = 2;
+    }
+}
+
+message StoringFilesResponse {
+    repeated FileLoadRequest files = 1;
+}

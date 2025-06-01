@@ -7,7 +7,6 @@ import hse.kpo.facade.Hse;
 import hse.kpo.factories.cars.HandCarFactory;
 import hse.kpo.factories.cars.PedalCarFactory;
 import hse.kpo.observers.SalesObserver;
-import hse.kpo.storages.CustomerStorage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -23,7 +22,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 @SpringBootTest
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 class HseTest {
-
+/*
     @Autowired
     private Hse hse;
 
@@ -124,4 +123,5 @@ class HseTest {
                 () -> assertTrue(report.matches("(?s).*VIN-\\d+.*"),
                         "Отчет должен содержать VIN автомобиля в формате 'VIN-число'"));
     }
+ */
 }

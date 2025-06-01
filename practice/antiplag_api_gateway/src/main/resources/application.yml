@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: api-gateway-app
+
+grpc:
+  client:
+    StoringService:
+      host: 'storingServiceApp'
+      port: 7070
+      address: '${GRPC_STORING_SERVICE_URL:localhost:7071}'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiation-type: plaintext
+    AnalysisService:
+      address: '${GRPC_ANALYSIS_SERVICE_URL:localhost:7072}'
+      host: analysis_service_app
+      port: 7072
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiation-type: plaintext
+
+
+
+server:
+  port: ${API_SERVICE_PORT:8080}
+
+logging:
+  level:
+    org.springframework.boot.env: DEBUG
+    net.devh.boot.grpc: DEBUG
+    io.grpc: DEBUG
