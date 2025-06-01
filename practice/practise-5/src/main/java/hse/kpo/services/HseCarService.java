@@ -1,29 +1,24 @@
 package hse.kpo.services;
 
-import hse.kpo.interfaces.IcarProvider;
-import hse.kpo.interfaces.IcustomerProvider;
-import java.util.Objects;
+import hse.kpo.interfaces.ICarProvider;
+import hse.kpo.interfaces.ICustomerProvider;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-/**
- * Класс объединяющий ICarProvider и ICustomerProvider и позволяющий распределять имеющиеся машины между покупателями.
- */
+import java.util.Objects;
+
 @Component
+@RequiredArgsConstructor
+@Slf4j
 public class HseCarService {
 
-    private final IcarProvider carProvider;
+    private final ICarProvider carProvider;
 
-    private final IcustomerProvider customerProvider;
+    private final ICustomerProvider customerProvider;
 
-    public HseCarService(IcarProvider carProvider, IcustomerProvider customersProvider) {
-        this.carProvider = carProvider;
-        this.customerProvider = customersProvider;
-    }
-
-    /**
-     * Метод итеруриется по покупателям и пытается сопоставить их с доступными машинами.
-     */
-    public void sellCars() {
+    public void sellCars()
+    {
         // получаем список покупателей
         var customers = customerProvider.getCustomers();
         // пробегаемся по полученному списку
@@ -32,6 +27,8 @@ public class HseCarService {
                     var car = carProvider.takeCar(customer);
                     if (Objects.nonNull(car)) {
                         customer.setCar(car);
+                    } else {
+                        log.warn("No car in CarService");
                     }
                 });
     }
