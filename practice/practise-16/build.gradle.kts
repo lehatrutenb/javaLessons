@@ -69,6 +69,9 @@ dependencies {
 	// Для подключения к брокеру Kafka
 	implementation("org.apache.kafka:kafka-clients")
 	testImplementation("org.springframework.kafka:spring-kafka-test")
+
+	// Redis
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 }
 
 protobuf {

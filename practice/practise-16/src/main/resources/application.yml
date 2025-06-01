@@ -1,8 +1,11 @@
 spring:
   application:
     name: kpo-app
+  redis:
+    host: localhost
+    port: 6379
   datasource:
-    url: jdbc:postgresql://localhost:5432/car_db
+    url: jdbc:postgresql://localhost:5433/car_db
     username: postgres
     password: postgres
 #    url: ${SPRING_DATASOURCE_URL}

@@ -16,6 +16,8 @@ import java.util.Optional;
 import hse.kpo.repositories.CarRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,7 +86,9 @@ public class HseCarService implements CarProvider{
         return carRepository.save(car);
     }
 
-    public Optional<Car> findByVin(Integer vin) {
+    @Cacheable(value = "cars", key = "#vin")
+    public Optional<Car> findByVin(Integer vin) throws InterruptedException {
+        Thread.sleep(2000);
         return carRepository.findById(vin);
     }
 
