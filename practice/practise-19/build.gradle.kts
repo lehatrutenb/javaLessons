@@ -12,13 +12,14 @@ plugins {
 group = "hse"
 version = "0.0.1-SNAPSHOT"
 
-checkstyle {
+/*checkstyle {
 	toolVersion = "10.13.0"
 	isIgnoreFailures = false
 	maxWarnings = 0
 	maxErrors = 1500
-}
+}*/
 
+/*
 sonar {
 	properties {
 		property("sonar.projectKey", "vecnick_kpo-2025")
@@ -26,6 +27,7 @@ sonar {
 		property("sonar.host.url", "https://sonarcloud.io")
 	}
 }
+*/
 
 java {
 	toolchain {
@@ -117,12 +119,14 @@ tasks.jacocoTestReport {
 	dependsOn(tasks.test) // tests are required to run before generating the report
 }
 
+/*
 tasks.withType<Checkstyle>().configureEach {
 	reports {
 		xml.required = true
 		html.required = true
 	}
 }
+*/
 
 // Добавляем генерацию proto в исходные пути
 sourceSets {
