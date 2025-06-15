@@ -1,0 +1,26 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "payment.orderService.grpc";
+
+message ErrorProto {
+    int32 code = 1;
+    string message = 2;
+}
+
+message OrderDescriptionProto {
+    string text = 1;
+}
+
+message UserIdProto {
+    int32 id = 1;
+}
+
+message OrderIdProto {
+    int32 id = 1;
+}
+
+enum OrderStatusProto {
+    NEW = 0;
+    FINISHED = 1;
+    CANCELLED = 2;
+}

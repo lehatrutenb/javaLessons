@@ -1,0 +1,17 @@
+services:
+  app:
+    build: .
+    container_name: paymentApigatewayServiceApp
+    ports:
+      - "8080:8080" # server
+    networks:
+      - shared-net
+      - default
+    environment:
+      GRPC_PAYMENT_SERVICE_URL: paymentServiceApp:7070
+      GRPC_ORDER_SERVICE_URL: orderServiceApp:7070
+
+networks:
+  shared-net:
+    name: shared-net
+    driver: bridge

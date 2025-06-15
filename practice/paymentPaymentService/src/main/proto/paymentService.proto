@@ -1,0 +1,57 @@
+syntax = "proto3";
+import "validate/validate.proto";
+import "sharedObjects.proto";
+option java_multiple_files = true;
+option java_package = "payment.paymentService.grpc";
+option java_outer_classname = "PaymentServiceProto";
+
+service PaymentService {
+    rpc createWallet (CreateWalletRequestProto) returns (WrappedCreateWalletResponseProto);
+    rpc getWalletBalance (GetWalletBalanceRequestProto) returns (WrappedGetWalletBalanceResponseProto);
+    rpc topUpWallet (TopUpWalletRequestProto) returns (WrappedTopUpWalletResponseProto);
+}
+
+message CreateWalletRequestProto {
+    UserIdProto userId = 1;
+}
+
+message CreateWalletResponseProto {
+    WalletIdProto walletId = 1;
+}
+
+message WrappedCreateWalletResponseProto {
+    oneof optResponse {
+        CreateWalletResponseProto createWalletResponse = 1;
+        ErrorProto error = 2;
+    }
+}
+
+message GetWalletBalanceRequestProto {
+    WalletIdProto walletId = 1;
+}
+
+message GetWalletBalanceResponseProto {
+    int32 amount = 1;
+}
+
+message  WrappedGetWalletBalanceResponseProto {
+    oneof optResponse {
+        GetWalletBalanceResponseProto getWalletBalanceResponse = 1;
+        ErrorProto error = 2;
+    }
+}
+
+message TopUpWalletRequestProto {
+    WalletIdProto walletId = 1;
+    int32 amount = 2;
+}
+
+message TopUpWalletResponseProto {
+}
+
+message WrappedTopUpWalletResponseProto {
+    oneof optResponse {
+        TopUpWalletResponseProto topUpWalletResponse = 1;
+        ErrorProto error = 2;
+    }
+}

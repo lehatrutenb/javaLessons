@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: order-service-app
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5501/order_service_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+      cache:
+        use_query_cache: false # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! for debug
+        use_second_level_cache: false # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! rm
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  kafka:
+    bootstrap-servers: ${SPRING_MESSAGE_BROKER_HOST:localhost:9092}
+    properties:
+      security.protocol: PLAINTEXT
+    admin:
+      auto-create-topics: true
+    consumer:
+      group-id: kpoTrainingCenter
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      properties:
+        spring.json.trusted.packages: "payment.orderService,java.util,java.lang" # list of trusted classes to serialize/deserialize
+        logging.level.root: INFO
+        logging.level.org.apache.kafka: DEBUG
+        logging.level.org.springframework.kafka: DEBUG
+        debug: true
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+grpc:
+  server:
+    port: ${GRPC_LISTENING_PORT:7071}
+kafka:
+  OrderAppliement:
+    topicRequests: OrderAppliementEvents
+    topicResponses: OrderCreationEvents
+    groupId: orderService
+server:
+  port: ${HTTP_LISTENING_PORT:8081}
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        stat: DEBUG
+        engine:
+          query:
+            spi:
+              NativeQueryInterpreter: DEBUG
+
+          transaction: DEBUG
+
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE

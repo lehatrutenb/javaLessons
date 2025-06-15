@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: payment-apiGateway-app
+
+grpc:
+  client:
+    OrderService:
+      address: 'static://${GRPC_ORDER_SERVICE_URL:localhost:7071}'
+      negotiation-type: plaintext
+    PaymentService:
+      address: 'static://${GRPC_PAYMENT_SERVICE_URL:localhost:7072}'
+      negotiation-type: plaintext
+
+server:
+  port: 8080

@@ -1,0 +1,46 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres_payment_payment_service_db
+    environment:
+      POSTGRES_DB: payment_service_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - data_postgres_payment_payment_service_db:/var/lib/postgresql/data
+    ports:
+      - "5502:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: paymentServiceApp
+    ports:
+      - "8082:8080" # server
+      - "7072:7070" # grpc
+    networks:
+      - shared-net
+      - default
+    environment:
+      GRPC_LISTENING_PORT: 7070
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_payment_payment_service_db:5432/payment_service_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      HTTP_LISTENING_PORT: 8080
+      SPRING_MESSAGE_BROKER_HOST: kafkaContainer:29092
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  data_postgres_payment_payment_service_db:
+
+networks:
+  shared-net:
+    name: shared-net
+    driver: bridge

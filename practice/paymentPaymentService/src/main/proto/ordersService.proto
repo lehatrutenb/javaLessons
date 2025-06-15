@@ -1,0 +1,26 @@
+syntax = "proto3";
+import "validate/validate.proto";
+import "google/protobuf/struct.proto";
+import "sharedObjects.proto";
+option java_multiple_files = true;
+option java_package = "payments.paymentService.grpc";
+option java_outer_classname = "OrderToPaymentServiceProto";
+
+message OrderCreationEventRequestProto {
+    UserIdProto userId = 1;
+    OrderIdProto orderId = 2;
+    int32 cost = 3;
+    OrderDescriptionProto orderDescription = 4;
+}
+
+message OrderCreationEventResponseProto {
+    OrderIdProto orderId = 1;
+    OrderStatusProto orderStatus = 2;
+}
+
+message WrappedOrderCreationEventResponseProto {
+    oneof optResponse {
+        OrderCreationEventResponseProto createOrderResponse = 1;
+        ErrorProto error = 2;
+    }
+}

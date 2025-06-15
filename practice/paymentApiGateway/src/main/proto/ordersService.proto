@@ -1,0 +1,60 @@
+syntax = "proto3";
+import "validate/validate.proto";
+import "google/protobuf/struct.proto";
+import "sharedObjects.proto";
+option java_multiple_files = true;
+option java_package = "payment.apigateway.grpc";
+option java_outer_classname = "OrderServiceProto";
+
+service OrderService {
+    rpc createOrder (CreateOrderRequestProto) returns (WrappedCreateOrderResponseProto);
+    rpc getOrderList (GetOrderListRequestProto) returns (WrappedGetOrderListResponseProto);
+    rpc getOrderMeta (GetOrderMetaRequestProto) returns (WrappedGetOrderMetaResponseProto);
+}
+
+message CreateOrderRequestProto {
+    UserIdProto userId = 1;
+    int32 cost = 2;
+    OrderDescriptionProto orderDescription = 3;
+}
+
+message CreateOrderResponseProto {
+    OrderIdProto orderId = 1;
+}
+
+message WrappedCreateOrderResponseProto {
+    oneof optResponse {
+        CreateOrderResponseProto createOrderResponse = 1;
+        ErrorProto error = 2;
+    }
+}
+
+message GetOrderListRequestProto {
+    UserIdProto userId = 1;
+}
+
+message GetOrderListResponseProto {
+    repeated OrderIdProto orderIds = 1;
+}
+
+message WrappedGetOrderListResponseProto {
+    oneof optResponse {
+        GetOrderListResponseProto getOrderListResponseProto = 1;
+        ErrorProto error = 2;
+    }
+}
+
+message GetOrderMetaRequestProto {
+    OrderIdProto orderId = 1;
+}
+
+message GetOrderMetaResponseProto {
+    OrderStatusProto orderStatus = 1;
+}
+
+message WrappedGetOrderMetaResponseProto {
+    oneof optResponse {
+        GetOrderMetaResponseProto getOrderMetaResponse = 1;
+        ErrorProto error = 2;
+    }
+}
