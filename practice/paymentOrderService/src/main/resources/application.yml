@@ -11,8 +11,8 @@ spring:
     hibernate:
       ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
       cache:
-        use_query_cache: false # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! for debug
-        use_second_level_cache: false # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! rm
+        use_query_cache: true # set false for debug
+        use_second_level_cache: true # set false for debug
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect

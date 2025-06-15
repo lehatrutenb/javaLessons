@@ -53,7 +53,7 @@ public class OrderService implements IorderService {
         orderCreationSubs.add(handler);
     }
 
-    @Scheduled(cron = "*/5 * * * * ?") // 15 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    @Scheduled(cron = "*/5 * * * * ?")
     @Transactional
     protected void createOrderInner() {
         Optional<Order> wrappedOrder;
